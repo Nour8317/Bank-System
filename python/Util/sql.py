@@ -8,7 +8,6 @@ driver = '{ODBC Driver 17 for SQL Server}'
 connection_string = f"DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}"
 connection = pypyodbc.connect(connection_string)
 cursor = connection.cursor()
-print(cursor.execute('SELECT * FROM Bank;').fetchall())
 def login(login,password):#returns Admin or Employee or Customer or False[if failed]
     demo_name = 'name'
     demo_hire_date = 'hire date'
