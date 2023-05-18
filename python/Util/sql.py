@@ -1,18 +1,15 @@
 import pypyodbc
 from User import employee,admin,customer
+server = '34.123.49.27'
+database = 'BankSystem'
+username = 'sqlserver'
+password = '123456'
 driver = '{ODBC Driver 17 for SQL Server}'
-server = 'Hatem'
-db = 'AdventureWorks2019'
-connection_string = f"""
-    DRIVER={driver};
-    SERVER={server};
-    DATABASE={db};
-    trusted_connection=yes;
-"""
-print(connection_string)
+connection_string = f"DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}"
 connection = pypyodbc.connect(connection_string)
 cursor = connection.cursor()
-# print(cursor.execute('SELECT name FROM Sales.Store;').fetchall())
+print(cursor.execute('SELECT * FROM Bank;').fetchall())
+
 def login(login,password):#returns Admin or Employee or Customer or False[if failed]
     demo_name = 'name'
     demo_hire_date = 'hire date'
@@ -26,8 +23,5 @@ def login(login,password):#returns Admin or Employee or Customer or False[if fai
     demo_employee = employee.Employee(demo_name,login,password,'employee',demo_dept,demo_hire_date)
     demo_admin = admin.Admin(demo_name,login,password,'admin',demo_partition,demo_hire_date)
     return demo_admin
-def create_customer(name,SSN,city,zone,street):
-    pass
-
 cursor.close()
 connection.close()
