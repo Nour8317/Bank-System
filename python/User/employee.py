@@ -2,7 +2,7 @@ from . import user
 class Employee(user.User):
     dept = ''
     hire_date = ''
-    
+
     def app(self):
         print('employee')
 
@@ -11,11 +11,11 @@ class Employee(user.User):
         self.hire_date = hire_date
         self.dept = dept
 
-    def AddCustomer():
+    def add_customer():
         print("the code of this method need to be written")
 
-    def ViewAllCustomers():
+    def view_all_customers():
         print("the code of this method need to be written")
 
-    def ChangeLoanState():#perform operation on loans(Accept,reject)
+    def change_loan_state():#perform operation on loans(Accept,reject)
         print("the code of this method need to be written")

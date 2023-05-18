@@ -26,5 +26,8 @@ def login(login,password):#returns Admin or Employee or Customer or False[if fai
     demo_employee = employee.Employee(demo_name,login,password,'employee',demo_dept,demo_hire_date)
     demo_admin = admin.Admin(demo_name,login,password,'admin',demo_partition,demo_hire_date)
     return demo_admin
+def create_customer(name,SSN,city,zone,street):
+    pass
+
 cursor.close()
 connection.close()

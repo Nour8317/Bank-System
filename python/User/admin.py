@@ -2,7 +2,7 @@ from . import user
 class Admin(user.User):
     partition = ''
     hire_date = ''
-    
+
     def app(self):
         print('admin')
 
@@ -11,16 +11,16 @@ class Admin(user.User):
         self.partition = partition
         self.hire_date = hire_date
     
-    def AddBank():
+    def add_bank():
         print("the code of this method need to be written")
     
-    def AddBankBranch():
+    def add_bank_branch():
         print("the code of this method need to be written")
     
-    def ViewAllLoans():#will print all the available loans in the branch
+    def view_all_loans():#will print all the available loans in the branch
         print("the code of this method need to be written")
     
-    def ViewLoans():#Showing a list of loans with customer name and employee name
+    def view_loans():#Showing a list of loans with customer name and employee name
         print("the code of this method need to be written")
 
 

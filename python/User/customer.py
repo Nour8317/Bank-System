@@ -4,7 +4,7 @@ class Customer(user.User):
     city = ''
     zone = ''
     ssn = ''
-    
+
     def app(self):
         print('Customer')
 
@@ -15,5 +15,8 @@ class Customer(user.User):
         self.city = city
         self.zone = zone
 
-    def RequestLoan():
+    def request_loan():
+        print("the code of this method need to be written")
+
+    def view_loans():
         print("the code of this method need to be written")
