@@ -9,7 +9,6 @@ connection_string = f"DRIVER={driver};SERVER={server};DATABASE={database};UID={u
 connection = pypyodbc.connect(connection_string)
 cursor = connection.cursor()
 print(cursor.execute('SELECT * FROM Bank;').fetchall())
-
 def login(login,password):#returns Admin or Employee or Customer or False[if failed]
     demo_name = 'name'
     demo_hire_date = 'hire date'
@@ -23,5 +22,6 @@ def login(login,password):#returns Admin or Employee or Customer or False[if fai
     demo_employee = employee.Employee(demo_name,login,password,'employee',demo_dept,demo_hire_date)
     demo_admin = admin.Admin(demo_name,login,password,'admin',demo_partition,demo_hire_date)
     return demo_admin
+connection.commit()
 cursor.close()
 connection.close()
