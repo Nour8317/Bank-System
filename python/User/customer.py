@@ -1,4 +1,5 @@
 from . import user
+import pandas as pd
 from Util import sql
 
 
@@ -50,16 +51,27 @@ class Customer(user.User):
             print('Operation Started Successfully')
         except:
             print('An Error Occured')
-
+    def show_accounts(self):
+        accounts = sql.get_accounts(self.id)
+        data = {
+            'type' : [account.type for account in accounts],
+            'balance' : [account.balance for account in accounts],
+        }
+        df = pd.DataFrame(data)
+        print(df)
     def print_menu(self):
         print("1-Show Loans.")
         print("2-Request Loan.")
         print("3-Start Operation On Loan.")
-        print("4-Exit.")
-
+        print("4-Show Accounts.")
+        print("5-Exit.")
+    def update_name(self,new_value):
+        sql.update_customer_name(self.id,new_value)
+    def update_login(self,new_value):
+        sql.update_customer_login(self.id,new_value)
     def app(self):
         choice = -1
-        while choice != 4:
+        while choice != 5:
             self.print_menu()
             choice = int(input("Enter Your Choice Please: "))
             if choice == 1:
@@ -68,3 +80,5 @@ class Customer(user.User):
                 self.request_loan()
             elif choice == 3:
                 self.start_loan()
+            elif choice == 4:
+                self.show_accounts()

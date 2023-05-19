@@ -3,15 +3,20 @@ from User import employee,admin,customer
 from Bank import bank
 from Branch import branch
 from Loan import loan,loan_type
-
+from Account import account
 server = '34.123.49.27'
 database = 'BankSystem'
 username = 'sqlserver'
 password = '123456'
 driver = '{ODBC Driver 17 for SQL Server}'
 connection_string = f"DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}"
-connection = pypyodbc.connect(connection_string)
-cursor = connection.cursor()
+def create_connection():
+    connection = pypyodbc.connect(connection_string)
+    cursor = connection.cursor()
+    return cursor,connection
+
+def create_account(customer_id,type,balance):
+    return account.Account(1,type,balance,customer_id)
 def get_banks():
     #TODO : remove demo data and query bank from DB
     return [
@@ -29,12 +34,23 @@ def get_branches():
         branch.Branch(1,'city 1','zone 1','sasac 1',1,'Alahly'),
         branch.Branch(1,'city 1','zone 1','sss 1',1,'Alahly'),
     ]
+def update_customer_name(customer_id,new_value):
+    pass
+def update_customer_login(customer_id,new_value):
+    pass
 def get_branch_name(branch_id):
     return 'Test Branch'
 def get_customer_name(customer_id):
     return 'Test Customer'
 def get_employee_name(employee_id):
     return 'Test Employee'
+def get_accounts(customer_id):
+    return [
+        account.Account(1,'type 1',500,1),
+        account.Account(2,'type 2',600,2),
+        account.Account(3,'type 3',700,3),
+        account.Account(4,'type 4',800,4),
+    ]
 def get_loans(customer_id = False,employee_id = False):
     #if customer id passed query loans of this customer only 
     #if employee id passed query loans of this employee or loans of the employee's branch that are draft or opened
@@ -54,9 +70,41 @@ def add_bank(bank_name,bank_city,bank_zone,bank_street):
 def add_branch(branch_city,branch_zone,branch_street,bank_code,bank_name):
     #TODO : query to create branch
     return branch.Branch(bank_code,branch_city,branch_zone,branch_street,6,bank_name)
+def create_user(cursor,name,login,type):
+    create_user_sql = """
+        INSERT INTO "User" (Name, Email, UserType)
+        OUTPUT inserted.UserID
+        VALUES (?,?,?);
+    """
+    user_values = (name, login, type)
+    cursor.execute(create_user_sql, user_values)
+    return cursor.fetchone()[0]
 def create_employee(name,login,pos,hire_date,branch_id):
+    cursor,connection = create_connection()
+    user_id = create_user(cursor,name,login,'employee')
+    customer_sql = """
+    INSERT INTO "Employee" (Position, HireDate , Branch_Number, EmployeeID) 
+    VALUES (?,?,?,?);
+    """
+    customer_values = (pos,hire_date,branch_id,user_id)
+    cursor.execute(customer_sql, customer_values)
+    connection.commit()
+    cursor.close()
+    connection.close()
     return employee.Employee(name,login,False,'employee',pos,hire_date,4,branch_id)
 def create_customer(name,login,city,street,zone,ssn,branch_id):
+    cursor,connection = create_connection()
+    user_id = user_id = create_user(cursor,name,login,'customer')
+
+    customer_sql = """
+    INSERT INTO "Customer" (SSN, Street, City, Zipcode, CustomerID) 
+    VALUES (?,?,?,?,?);
+    """
+    customer_values = (ssn,street,city,zone,user_id)
+    cursor.execute(customer_sql, customer_values)
+    connection.commit()
+    cursor.close()
+    connection.close()
     return customer.Customer(name,login,False,'customer',ssn,street,city,zone,7,branch_id)
 def change_loan_state(loan_id,state):
     pass
@@ -72,7 +120,9 @@ def get_customers(branch_id):
     demo_city = 'city'
     demo_zone = 'zone'
     demo_street = 'street'
-    demo_customer = customer.Customer(demo_name,login,password,'customer',demo_ssn,demo_street,demo_city,demo_zone,demo_id,1)
+    demo_login = 'email@email.com'
+    demo_password = 'ppppp'
+    demo_customer = customer.Customer(demo_name,demo_login,demo_password,'customer',demo_ssn,demo_street,demo_city,demo_zone,demo_id,1)
     return [
         demo_customer,demo_customer,demo_customer,demo_customer,demo_customer
     ]
@@ -94,7 +144,4 @@ def login(login,password):#returns Admin or Employee or Customer or False[if fai
     demo_customer = customer.Customer(demo_name,login,password,'customer',demo_ssn,demo_street,demo_city,demo_zone,demo_id,1)
     demo_employee = employee.Employee(demo_name,login,password,'employee',demo_dept,demo_hire_date,demo_id,2)
     demo_admin = admin.Admin(demo_name,login,password,'admin',demo_partition,demo_hire_date,demo_id)
-    return demo_employee
-connection.commit()
-cursor.close()
-connection.close()
+    return demo_admin

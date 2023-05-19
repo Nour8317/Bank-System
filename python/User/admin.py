@@ -1,5 +1,6 @@
 from . import user 
 from Util import sql
+from datetime import date
 class Admin(user.User):
     partition = ''
     hire_date = ''
@@ -61,7 +62,10 @@ class Admin(user.User):
             print('Invalid Index')
             return
         name = input("Enter The Employee Name Please: ")
-        hire_date = input("Enter The Employee Hire Date Please: ")
+        hire_year = int(input("Enter The Employee Hire Year Please: "))
+        hire_month = int(input("Enter The Employee Hire Month Please: "))
+        hire_day = int(input("Enter The Employee Hire Day Please: "))
+        hire_date = date(hire_year,hire_month,hire_day)
         position = input("Enter The Employee Position Please: ")
         login = input("Enter The Employee login Please: ")
         sql.create_employee(name,login,position,hire_date,branches[index].id)

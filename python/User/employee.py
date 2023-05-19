@@ -10,10 +10,12 @@ class Employee(user.User):
         print("1-Add Customer.")
         print("2-View All Customers.")
         print("3-Change Loan State.")
-        print("4-Exit.")
+        print("4-Update Customer.")
+        print("5-Add Account.")
+        print("6-Exit.")
     def app(self):
         choice = -1
-        while choice != 4:
+        while choice != 6:
             self.print_menu()
             choice = int(input("Enter Your Choice Please: "))
             if choice == 1:
@@ -22,6 +24,10 @@ class Employee(user.User):
                 self.view_all_customers()
             elif choice == 3:
                 self.change_loan_state()
+            elif choice == 4:
+                self.update_customer()
+            elif choice == 5:
+                self.add_account()
 
     def __init__(self,name,login,password,type,pos,hire_date,id,branch_id):
         super().__init__(name,login,password,type,id)
@@ -39,8 +45,7 @@ class Employee(user.User):
             print('Please Provide A valid ssn')
         login = input("Enter The Employee login Please: ")
         sql.create_customer(name,login,city,street,zone,ssn,self.branch_id)
-    def view_all_customers(self):
-        customers = sql.get_customers(self.branch_id)
+    def show_customers(self,customers):
         data = {
             'name' : [customer.name for customer in customers],
             'ssn' : [re.sub(r'\d(?=\d{4})', '#', customer.ssn) for customer in customers],
@@ -50,6 +55,40 @@ class Employee(user.User):
         }
         df = pd.DataFrame(data)
         print(df)
+    def view_all_customers(self):
+        customers = sql.get_customers(self.branch_id)
+        self.show_customers(customers)
+    def get_choosen_customer(self):
+        customers = sql.get_customers(self.branch_id)
+        self.show_customers(customers)
+        index = int(input('Please Choose Customer To Update: '))
+        if index < 0 or index >= len(customers):
+            print('Invalid Index')
+            return False
+        return customers[index]
+    def update_customer(self):
+        choosen_customer = self.get_choosen_customer()
+        if not choosen_customer:
+            return 
+        print('Current Values :-')
+        print(f'1.Name : {choosen_customer.name}')
+        print(f'2.login : {choosen_customer.login}')
+        choice = int(input('Choose Value index to update : '))
+        if choice == 1:
+            new_value = input('New Value : ')
+            choosen_customer.update_name(new_value)
+        elif choice == 2:
+            new_value = input('New Value : ')
+            choosen_customer.update_login(new_value)
+        else:
+            print('Invalid Index')
+    def add_account(self):
+        choosen_customer = self.get_choosen_customer()
+        if not choosen_customer:
+            return 
+        type = input('Please Enter Account Type : ')
+        balance = float(input('Please Enter Account Balance : '))
+        sql.create_account(choosen_customer.id,type,balance)
     def change_loan_state(self):#perform operation on loans(Accept,reject,paid)
         loans = sql.get_loans(employee_id=self.id)
         self.view_loans_table(loans)
