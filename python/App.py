@@ -2,9 +2,6 @@ from User.employee import Employee
 from User.user import User
 from Util import sql
 
-def register():
-    print("the code of this method need to be written")
-
 def login():
     print("the code of this method need to be written")
 
