@@ -9,7 +9,7 @@ class Employee(user.User):
     def print_menu(self):
         print("1-Add Customer.")
         print("2-View All Customers.")
-        print("3-Change Loan State.")
+        print("3-Change Loan State.")#TODO
         print("4-Update Customer.")
         print("5-Add Account.")
         print("6-Exit.")
@@ -36,15 +36,18 @@ class Employee(user.User):
         self.branch_id = branch_id
 
     def add_customer(self):
-        name = input("Enter The Employee Name Please: ")
-        city = input("Enter The Employee City Please: ")
-        zone = input("Enter The Employee zone Please: ")
-        street = input("Enter The Employee street Please: ")
-        ssn = input("Enter The Employee ssn Please (14 digits): ")
+        name = input("Enter The Customer Name Please: ")
+        city = input("Enter The Customer City Please: ")
+        zone = input("Enter The Customer zone Please: ")
+        street = input("Enter The Customer street Please: ")
+        ssn = input("Enter The Customer ssn Please (14 digits): ")
         if len(ssn) != 14:
             print('Please Provide A valid ssn')
-        login = input("Enter The Employee login Please: ")
-        sql.create_customer(name,login,city,street,zone,ssn,self.branch_id)
+        login = input("Enter The Customer login Please: ")
+        try:
+            sql.create_customer(name,login,city,street,zone,ssn,self.branch_id)
+        except Exception as e:
+            print(e)
     def show_customers(self,customers):
         data = {
             'name' : [customer.name for customer in customers],
@@ -74,21 +77,30 @@ class Employee(user.User):
         print(f'1.Name : {choosen_customer.name}')
         print(f'2.login : {choosen_customer.login}')
         choice = int(input('Choose Value index to update : '))
-        if choice == 1:
-            new_value = input('New Value : ')
-            choosen_customer.update_name(new_value)
-        elif choice == 2:
-            new_value = input('New Value : ')
-            choosen_customer.update_login(new_value)
-        else:
-            print('Invalid Index')
+        try:
+            if choice == 1:
+                new_value = input('New Value : ')
+                choosen_customer.update_name(new_value)
+                print('Updated Successfully')
+            elif choice == 2:
+                new_value = input('New Value : ')
+                choosen_customer.update_login(new_value)
+                print('Updated Successfully')
+            else:
+                print('Invalid Index')
+        except Exception as e:
+            print(e)
     def add_account(self):
         choosen_customer = self.get_choosen_customer()
         if not choosen_customer:
             return 
         type = input('Please Enter Account Type : ')
         balance = float(input('Please Enter Account Balance : '))
-        sql.create_account(choosen_customer.id,type,balance)
+        try:
+            sql.create_account(choosen_customer.id,type,balance)
+            print('Account Created Successfully')
+        except Exception as e:
+            print(e)
     def change_loan_state(self):#perform operation on loans(Accept,reject,paid)
         loans = sql.get_loans(employee_id=self.id)
         self.view_loans_table(loans)

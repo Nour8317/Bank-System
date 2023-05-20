@@ -60,9 +60,9 @@ class Customer(user.User):
         df = pd.DataFrame(data)
         print(df)
     def print_menu(self):
-        print("1-Show Loans.")
-        print("2-Request Loan.")
-        print("3-Start Operation On Loan.")
+        print("1-Show Loans.")#TODO
+        print("2-Request Loan.")#TODO
+        print("3-Start Operation On Loan.")#TODO
         print("4-Show Accounts.")
         print("5-Exit.")
     def update_name(self,new_value):

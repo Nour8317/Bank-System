@@ -18,8 +18,8 @@ class Admin(user.User):
         try:
             sql.add_bank(bank_name,bank_city,bank_zone,bank_street)
             print('Bank Created Succeccfully')
-        except:
-            print('An Error Occured')
+        except Exception as e:
+            print(f'An Error Occured : {e}')
     def add_branch(self):
         banks = sql.get_banks()
         i = 1
@@ -45,7 +45,7 @@ class Admin(user.User):
         types = sql.get_all_loan_types()
         i = 1
         for type in types:
-            print(f"{i}. Name  = {type.name} , ID = {type.id} , Branch = {type.get_branch_name()}")
+            print(f"{i}. Name  = {type.name} , ID = {type.id}")
             i += 1
     def view_loans(self):#Showing a list of loans with customer name and employee name
         loans = sql.get_loans()
@@ -68,12 +68,16 @@ class Admin(user.User):
         hire_date = date(hire_year,hire_month,hire_day)
         position = input("Enter The Employee Position Please: ")
         login = input("Enter The Employee login Please: ")
-        sql.create_employee(name,login,position,hire_date,branches[index].id)
+        try:
+            sql.create_employee(name,login,position,hire_date,branches[index].id)
+        except Exception as e:
+            print(f'Error : {e}')
+
     def print_menu(self):
         print("1-Add Bank.")
         print("2-Add Branch.")
         print("3-View All Available Loan Types.")
-        print("4-View All Loans With Customer Name and Employee Name.")
+        print("4-View All Loans With Customer Name and Employee Name.")#TODO
         print("5-Add Employee.")
         print("6-Exit.")
     def app(self):

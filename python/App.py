@@ -9,6 +9,7 @@ def main():
     login = input('login : ')
     password = input('password : ')
     current_user = sql.login(login,password)
+    print(f'Current User is : {current_user.name}')
     current_user.app()
 if __name__ == '__main__':
     main()
