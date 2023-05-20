@@ -28,5 +28,5 @@ class Loan():
         return sql.get_customer_name(self.customer_id)
     def change_loan_state(self,state):
         sql.change_loan_state(self.id,state)
-    def set_employee_id(self,employee_id,branch_id):
-        sql.set_employee_id(self.id,employee_id,branch_id)
+    def set_employee_id(self,employee_id):
+        return sql.set_employee_id(self.id,employee_id)

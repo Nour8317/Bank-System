@@ -9,7 +9,7 @@ class Employee(user.User):
     def print_menu(self):
         print("1-Add Customer.")
         print("2-View All Customers.")
-        print("3-Change Loan State.")#TODO
+        print("3-Change Loan State.")
         print("4-Update Customer.")
         print("5-Add Account.")
         print("6-Exit.")
@@ -102,8 +102,9 @@ class Employee(user.User):
         except Exception as e:
             print(e)
     def change_loan_state(self):#perform operation on loans(Accept,reject,paid)
-        loans = sql.get_loans(employee_id=self.id)
-        self.view_loans_table(loans)
+        loans = sql.get_loans(employee_id=self.id,branch_id=self.branch_id)
+        if not self.view_loans_table(loans):
+            return
         loan_index = int(input('Please Choose Loan to Change its state : '))
         if loan_index < 0 or loan_index >= len(loans):
             print('Invalid Index')
@@ -119,10 +120,10 @@ class Employee(user.User):
         option = int(input('Your Action : '))
         if option == 1 and is_opened:
             choosen_loan.change_loan_state('accepted')
-            choosen_loan.set_employee_id(self.id,self.branch_id)
+            choosen_loan.set_employee_id(self.id)
         elif option == 2 and is_opened:
             choosen_loan.change_loan_state('rejected')
-            choosen_loan.set_employee_id(self.id,self.branch_id)
+            choosen_loan.set_employee_id(self.id)
         elif option == 1 and not is_opened:
             choosen_loan.change_loan_state('paid')
 

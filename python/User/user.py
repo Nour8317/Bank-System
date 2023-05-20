@@ -7,6 +7,9 @@ class User():
     type = '' #'customer' or 'admin' or 'employee'
     id = 0
     def view_loans_table(self,loans):
+        if len(loans) == 0:
+            print('Nothing to show')
+            return False
         loan_data = {
         'Loan Type': [loan.loan_type_name for loan in loans],
         'Amount': [loan.amount for loan in loans],
@@ -17,6 +20,7 @@ class User():
         }
         df = pd.DataFrame(loan_data)
         print(df)
+        return True
     def app(self):
         pass
     def __init__(self,name,login,password,type,id):

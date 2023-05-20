@@ -5,10 +5,8 @@ class Admin(user.User):
     partition = ''
     hire_date = ''
 
-    def __init__(self,name,login,password,type,partition,hire_date,id):
+    def __init__(self,name,login,password):
         super().__init__(name,login,password,type,id)
-        self.partition = partition
-        self.hire_date = hire_date
     
     def add_bank(self):
         bank_name = input("Enter The Bank Name Please: ")
@@ -77,7 +75,7 @@ class Admin(user.User):
         print("1-Add Bank.")
         print("2-Add Branch.")
         print("3-View All Available Loan Types.")
-        print("4-View All Loans With Customer Name and Employee Name.")#TODO
+        print("4-View All Loans With Customer Name and Employee Name.")
         print("5-Add Employee.")
         print("6-Exit.")
     def app(self):
