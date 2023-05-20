@@ -5,7 +5,7 @@ class Admin(user.User):
     partition = ''
     hire_date = ''
 
-    def __init__(self,name,login,password):
+    def __init__(self,name,login,password,type,id):
         super().__init__(name,login,password,type,id)
     
     def add_bank(self):

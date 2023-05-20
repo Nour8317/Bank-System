@@ -404,7 +404,7 @@ def login(login, password):
         return False
     type,name,user_id = user
     if type == 'admin':
-        return admin.Admin(name, login, password,'admin')
+        return admin.Admin(name, login, password,'admin',user_id)
     if type == 'customer':
         return get_customers(user_id = user_id)[0]
     if type == 'employee':
