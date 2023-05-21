@@ -1,12 +1,11 @@
 from . import user 
-from Util import sql
 from datetime import date
 class Admin(user.User):
     partition = ''
     hire_date = ''
 
-    def __init__(self,name,login,password,type,id):
-        super().__init__(name,login,password,type,id)
+    def __init__(self,sql,name,login,password,type,id):
+        super().__init__(sql,name,login,password,type,id)
     
     def add_bank(self):
         bank_name = input("Enter The Bank Name Please: ")
@@ -14,12 +13,12 @@ class Admin(user.User):
         bank_zone = input("Enter The Bank Zone Please: ")
         bank_street = input("Enter The Bank Street Please: ")
         try:
-            sql.add_bank(bank_name,bank_city,bank_zone,bank_street)
+            self.sql.add_bank(bank_name,bank_city,bank_zone,bank_street)
             print('Bank Created Succeccfully')
         except Exception as e:
             print(f'An Error Occured : {e}')
     def add_branch(self):
-        banks = sql.get_banks()
+        banks = self.sql.get_banks()
         i = 1
         print('Banks to choose from :-')
         for bank in banks:
@@ -33,23 +32,24 @@ class Admin(user.User):
         branch_zone = input("Enter The Brach Zone: ")
         branch_street = input("Enter The Brach Street: ")
 
-        actual_bank = banks[bank_index - 1]
+        actual_bank = banks[bank_index]
         try:
-            branch = sql.add_branch(branch_city,branch_zone,branch_street,actual_bank.id,actual_bank.name)
+            print([actual_bank.id,actual_bank.name])
+            branch = self.sql.add_branch(branch_city,branch_zone,branch_street,actual_bank.id,actual_bank.name)
             print('branch created succefully')
         except:
             print('Error occured !!')
     def view_all_loan_types(self):#will print all the available loans in the branch
-        types = sql.get_all_loan_types()
+        types = self.sql.get_all_loan_types()
         i = 1
         for type in types:
             print(f"{i}. Name  = {type.name} , ID = {type.id}")
             i += 1
     def view_loans(self):#Showing a list of loans with customer name and employee name
-        loans = sql.get_loans()
+        loans = self.sql.get_loans()
         self.view_loans_table(loans)
     def add_employee(self):
-        branches = sql.get_branches()
+        branches = self.sql.get_branches()
         i = 1
         print('Branches to choose from :-')
         for branch in branches:
@@ -67,7 +67,7 @@ class Admin(user.User):
         position = input("Enter The Employee Position Please: ")
         login = input("Enter The Employee login Please: ")
         try:
-            sql.create_employee(name,login,position,hire_date,branches[index].id)
+            self.sql.create_employee(name,login,position,hire_date,branches[index].id)
             print('Employee Created Successfully !!')
         except Exception as e:
             print(f'Error : {e}')

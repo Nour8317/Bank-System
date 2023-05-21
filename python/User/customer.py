@@ -1,6 +1,5 @@
 from . import user
 import pandas as pd
-from Util import sql
 
 
 class Customer(user.User):
@@ -10,8 +9,8 @@ class Customer(user.User):
     ssn = ''
     branch_id = 0
 
-    def __init__(self, name, login, password, type, ssn, street, city, zone, id, branch_id):
-        super().__init__(name, login, password, type, id)
+    def __init__(self,sql, name, login, password, type, ssn, street, city, zone, id, branch_id):
+        super().__init__(sql,name, login, password, type, id)
         self.ssn = ssn
         self.street = street
         self.city = city
@@ -19,7 +18,7 @@ class Customer(user.User):
         self.branch_id = branch_id
 
     def request_loan(self):
-        loan_types = sql.get_all_loan_types(self.branch_id)
+        loan_types = self.sql.get_all_loan_types(self.branch_id)
         index = 1
         for loan in loan_types:
             print(f'{index} - {loan.name}')
@@ -29,18 +28,18 @@ class Customer(user.User):
             print('Invalid Index')
         amount = float(input('Loan Amount : '))
         try:
-            sql.create_loan(loan_types[loan_index].id,
+            self.sql.create_loan(loan_types[loan_index].id,
                             loan_types[loan_index].name, amount, self.id,self.branch_id)
             print('Loan Created Successfully')
         except Exception as e:
             print(f'An Error Occured : {e}')
 
     def view_loans(self):
-        loans = sql.get_loans(customer_id=self.id)
+        loans = self.sql.get_loans(customer_id=self.id)
         self.view_loans_table(loans)
 
     def start_loan(self):
-        loans = sql.get_loans(customer_id=self.id,state = 'draft')
+        loans = self.sql.get_loans(customer_id=self.id,state = 'draft')
         view = self.view_loans_table(loans)
         if not view:
             return
@@ -54,7 +53,7 @@ class Customer(user.User):
         except Exception  as e:
             print(f'An Error Occured : {e}')
     def show_accounts(self):
-        accounts = sql.get_accounts(self.id)
+        accounts = self.sql.get_accounts(self.id)
         data = {
             'type' : [account.type for account in accounts],
             'balance' : [account.balance for account in accounts],
@@ -68,9 +67,9 @@ class Customer(user.User):
         print("4-Show Accounts.")
         print("5-Exit.")
     def update_name(self,new_value):
-        sql.update_customer_name(self.id,new_value)
+        self.sql.update_customer_name(self.id,new_value)
     def update_login(self,new_value):
-        sql.update_customer_login(self.id,new_value)
+        self.sql.update_customer_login(self.id,new_value)
     def app(self):
         choice = -1
         while choice != 5:

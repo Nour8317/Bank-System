@@ -1,5 +1,4 @@
 from . import user 
-from Util import sql
 import pandas as pd
 import re
 class Employee(user.User):
@@ -29,8 +28,8 @@ class Employee(user.User):
             elif choice == 5:
                 self.add_account()
 
-    def __init__(self,name,login,password,type,pos,hire_date,id,branch_id):
-        super().__init__(name,login,password,type,id)
+    def __init__(self,sql,name,login,password,type,pos,hire_date,id,branch_id):
+        super().__init__(sql,name,login,password,type,id)
         self.hire_date = hire_date
         self.pos = pos
         self.branch_id = branch_id
@@ -45,7 +44,8 @@ class Employee(user.User):
             print('Please Provide A valid ssn')
         login = input("Enter The Customer login Please: ")
         try:
-            sql.create_customer(name,login,city,street,zone,ssn,self.branch_id)
+            self.sql.create_customer(name,login,city,street,zone,ssn,self.branch_id)
+            print('Customer Created Successfully !!')
         except Exception as e:
             print(e)
     def show_customers(self,customers):
@@ -59,10 +59,10 @@ class Employee(user.User):
         df = pd.DataFrame(data)
         print(df)
     def view_all_customers(self):
-        customers = sql.get_customers(self.branch_id)
+        customers = self.sql.get_customers(self.branch_id)
         self.show_customers(customers)
     def get_choosen_customer(self):
-        customers = sql.get_customers(self.branch_id)
+        customers = self.sql.get_customers(self.branch_id)
         self.show_customers(customers)
         index = int(input('Please Choose Customer To Update: '))
         if index < 0 or index >= len(customers):
@@ -97,12 +97,12 @@ class Employee(user.User):
         type = input('Please Enter Account Type : ')
         balance = float(input('Please Enter Account Balance : '))
         try:
-            sql.create_account(choosen_customer.id,type,balance)
+            self.sql.create_account(choosen_customer.id,type,balance)
             print('Account Created Successfully')
         except Exception as e:
             print(e)
     def change_loan_state(self):#perform operation on loans(Accept,reject,paid)
-        loans = sql.get_loans(employee_id=self.id,branch_id=self.branch_id)
+        loans = self.sql.get_loans(employee_id=self.id,branch_id=self.branch_id)
         if not self.view_loans_table(loans):
             return
         loan_index = int(input('Please Choose Loan to Change its state : '))

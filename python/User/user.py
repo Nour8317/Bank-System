@@ -6,6 +6,7 @@ class User():
     password = ''
     type = '' #'customer' or 'admin' or 'employee'
     id = 0
+    sql = ''
     def view_loans_table(self,loans):
         if len(loans) == 0:
             print('Nothing to show')
@@ -23,9 +24,10 @@ class User():
         return True
     def app(self):
         pass
-    def __init__(self,name,login,password,type,id):
+    def __init__(self,sql,name,login,password,type,id):
         self.id = id
         self.name = name
         self.login = login
         self.password = password
         self.type = type
+        self.sql = sql
