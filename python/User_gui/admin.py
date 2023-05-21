@@ -97,7 +97,8 @@ class Admin(user.User):
         lbl_branch_street.grid(row=3, column=0, padx=(90, 0), pady=(20, 0))
 
         entry_branch_street = Entry(branch_window)
-        entry_branch_street.grid(row=3, column=1, padx=10, pady=(20, 0))        
+        entry_branch_street.grid(row=3, column=1, padx=10, pady=(20, 0))      
+
         banks = self.sql.get_banks()
         banks_dict = {bank.name : bank.id for bank in banks}
         banks_dict[''] = 0
@@ -120,6 +121,70 @@ class Admin(user.User):
      except Exception as e:
         messagebox.showerror("Error", f"An error occurred while adding the branch:\n{str(e)}")
 
+    def add_employee(self):
+        branch_window = Toplevel()
+        branch_window.title("Add Employee")
+        branch_window.configure(bg="#d6e2e0")
+        branch_window.geometry("400x350")  # Set the window size here
+        branch_window.resizable(False, False)
+
+        lbl_Employee_Name = Label(branch_window, text="Employee Name:", bg="#d6e2e0",fg="#152238")
+        lbl_Employee_Name.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
+
+        lbl_Employee_Name = Entry(branch_window)
+        lbl_Employee_Name.grid(row=1, column=1, padx=10, pady=(20, 0))
+
+        lbl_Employee_HireYear= Label(branch_window, text="Employee Hire Year:", bg="#d6e2e0",fg="#152238")
+        lbl_Employee_HireYear.grid(row=2, column=0, padx=(90, 0), pady=(20, 0))
+
+        lbl_Employee_HireYear = Entry(branch_window)
+        lbl_Employee_HireYear.grid(row=2, column=1,padx=10, pady=(20, 0))
+
+        lbl_Employee_HireMonth = Label(branch_window, text="Employee Hire Month:", bg="#d6e2e0",fg="#152238")
+        lbl_Employee_HireMonth.grid(row=3, column=0, padx=(90, 0), pady=(20, 0))
+
+        lbl_Employee_HireMonth = Entry(branch_window)
+        lbl_Employee_HireMonth.grid(row=3, column=1,padx=10, pady=(20, 0))
+
+        lbl_Employee_HireDay = Label(branch_window, text="Employee Hire Day:", bg="#d6e2e0",fg="#152238")
+        lbl_Employee_HireDay.grid(row=4, column=0,padx=(90, 0), pady=(20, 0))
+
+        lbl_Employee_HireDay = Entry(branch_window)
+        lbl_Employee_HireDay.grid(row=4, column=1,padx=10, pady=(20, 0))
+
+        lbl_Employee_Position = Label(branch_window, text="Employee Position:", bg="#d6e2e0",fg="#152238")
+        lbl_Employee_Position.grid(row=5, column=0, padx=(90, 0), pady=(20, 0))
+
+        lbl_Employee_Position = Entry(branch_window)
+        lbl_Employee_Position.grid(row=5, column=1,padx=10, pady=(20, 0))
+
+        bl_Employee_login = Label(branch_window, text="Employee login:", bg="#d6e2e0",fg="#152238")
+        bl_Employee_login.grid(row=6, column=0, padx=(90, 0), pady=(20, 0))
+
+        bl_Employee_login = Entry(branch_window)
+        bl_Employee_login.grid(row=6, column=1, padx=10, pady=(20, 0))   
+
+        Branch = self.sql.get_branches()
+        Branch_dict = {Branch.name : Branch.id for Branch in Branch}
+        Branch_dict[''] = 0
+        lbl_Branch = Label(branch_window, text="Branch :", bg="#d6e2e0",fg="#152238")
+        lbl_Branch.grid(row=7, column=1, padx=(90, 0), pady=(20, 0))
+        branch_ID = tk.StringVar(branch_window)
+        selection_combo = ttk.Combobox(branch_window, textvariable=Branch_dict, values=list(Branch_dict.keys()))
+        selection_combo.grid(row=8, column=1, padx=10, pady=(20, 0))
+        # Create a button to submit the branch information
+        btn_submit = Button(branch_window, text="Submit", command=lambda: self.submit_Employee_info(
+            Branch_dict[selection_combo.get()],  lbl_Employee_Name.get(),bl_Employee_login.get(),lbl_Employee_Position.get(),lbl_Employee_HireDay,branch_ID.get() ),
+                            bg="#152238", fg="white", height=1, width=16)
+        btn_submit.grid(row=7, column=0, columnspan=2, padx=(160, 0), pady=10)
+
+    def submit_Employee_info(self,name, login, pos, hire_date, branch_id):
+     try:
+
+        self.sql.add_employee(self,name, login, pos, hire_date, branch_id)
+        messagebox.showinfo("Success", "Employee created successfully!")
+     except Exception as e:
+        messagebox.showerror("Error", f"An error occurred while adding the Employee: \n{str(e)}")
 
     def view_all_loan_types(self):
         # Create a new window for displaying loan types
@@ -169,6 +234,9 @@ class Admin(user.User):
         frame1 = Frame(admin_window, bg="#d6e2e0")
         frame1.pack(pady=(100, 0), padx=80)
 
+        btn_add_employee = Button(frame1, text="Add Employee", command=self.add_employee, bg="#152238", fg="white", height=5, width=30)
+        btn_add_employee.pack(anchor="n")
+
         btn_add_bank = Button(frame1, text="Add Bank", command=self.add_bank, bg="#152238", fg="white", height=5, width=30)
         btn_add_bank.pack(side="left")
 
@@ -187,3 +255,4 @@ class Admin(user.User):
 
         # Start the main loop for the admin window
         return admin_window
+        
