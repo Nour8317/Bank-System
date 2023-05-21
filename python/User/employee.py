@@ -1,10 +1,12 @@
 from . import user 
 import pandas as pd
 import re
+from User_gui import employee
 class Employee(user.User):
     pos = ''
     hire_date = ''
     branch_id = False
+
     def print_menu(self):
         print("1-Add Customer.")
         print("2-View All Customers.")
@@ -27,7 +29,9 @@ class Employee(user.User):
                 self.update_customer()
             elif choice == 5:
                 self.add_account()
-
+    def page(self):
+        gui = employee.Employee(self.sql,self.name,self.login,self.password,self.type,self.pos,self.hire_date,self.id,self.branch_id)
+        gui.page()
     def __init__(self,sql,name,login,password,type,pos,hire_date,id,branch_id):
         super().__init__(sql,name,login,password,type,id)
         self.hire_date = hire_date

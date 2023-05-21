@@ -1,8 +1,12 @@
 from . import user 
 from datetime import date
+from User_gui import admin
 class Admin(user.User):
     partition = ''
     hire_date = ''
+    def page(self):
+        admin_gui = admin.Admin(self.sql,self.name,self.login,self.password,self.type,self.id)
+        admin_gui.page()
 
     def __init__(self,sql,name,login,password,type,id):
         super().__init__(sql,name,login,password,type,id)

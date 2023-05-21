@@ -1,5 +1,10 @@
 import pandas as pd
-
+from curses import window
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+from PIL import Image, ImageTk
+from tkinter import Tk, Label, Button, Frame
 class User():
     name = ''
     login = ''
@@ -7,6 +12,31 @@ class User():
     type = '' #'customer' or 'admin' or 'employee'
     id = 0
     sql = ''
+    def view_loans_gui(self,loans):
+        # Create a new window for displaying loans
+      # Create a new window for displaying loan types
+        loan_types_window = Toplevel()
+        loan_types_window.title("Loans")
+        loan_types_window.configure(bg="#d6e2e0")
+        loan_types_window.resizable(False, False)
+
+
+        # Create a treeview widget to display the loan types in a table
+        tree = ttk.Treeview(loan_types_window, columns=("loan_type", "amount", "customer", "Employee", "Branch", "state"), show="headings")
+        tree.heading("loan_type", text="Loan Type")
+        tree.heading("amount", text="Amount")
+        tree.heading("customer", text="Customer")
+        tree.heading("Employee", text="Employee")
+        tree.heading("Branch", text="Branch")
+        tree.heading("state", text="State")
+        tree.grid(row=0, column=0, padx=10, pady=10)
+        # Fetch all loan types from the database
+        types = self.sql.get_loans()
+        # Insert loans into the treeview
+        for i, loan in enumerate(loans, start=1):
+             tree.insert("", "end", values=(loan.loan_type_name, loan.amount, loan.get_customer_name(), loan.get_employee_name(), loan.get_branch_name(), loan.state))
+
+
     def view_loans_table(self,loans):
         if len(loans) == 0:
             print('Nothing to show')

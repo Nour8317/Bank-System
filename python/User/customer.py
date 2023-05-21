@@ -1,5 +1,6 @@
 from . import user
 import pandas as pd
+from User_gui import customer
 
 
 class Customer(user.User):
@@ -8,7 +9,9 @@ class Customer(user.User):
     zone = ''
     ssn = ''
     branch_id = 0
-
+    def page(self):
+        gui = customer.Customer(self.sql,self.name,self.login,self.password,self.type,self.ssn,self.street,self.city,self.zone,self.id,self.branch_id)
+        gui.page()
     def __init__(self,sql, name, login, password, type, ssn, street, city, zone, id, branch_id):
         super().__init__(sql,name, login, password, type, id)
         self.ssn = ssn
