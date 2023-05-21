@@ -42,6 +42,7 @@ class Employee(user.User):
         ssn = input("Enter The Customer ssn Please (14 digits): ")
         if len(ssn) != 14:
             print('Please Provide A valid ssn')
+            return
         login = input("Enter The Customer login Please: ")
         try:
             self.sql.create_customer(name,login,city,street,zone,ssn,self.branch_id)

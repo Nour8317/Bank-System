@@ -19,6 +19,9 @@ class Customer(user.User):
 
     def request_loan(self):
         loan_types = self.sql.get_all_loan_types(self.branch_id)
+        if len(loan_types) == 0:
+            print('Sorry No Loan Types Available for your branch')
+            return
         index = 1
         for loan in loan_types:
             print(f'{index} - {loan.name}')
