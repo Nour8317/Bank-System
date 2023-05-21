@@ -103,28 +103,39 @@ class SQL():
 
         if not customer_id and not employee_id:
             sql = """
-                SELECT lt.Loan_Type,l.Amount,l.Loan_ID,c.Name,e.Name,l.Loan_State,b.computed_name 
-                FROM Loan_Type as lt,Loan as l,[User] as c,[User] as e,Branch as b 
-                WHERE lt.loan_TypeID = l.Loan_Type_ID and e.UserID = l.Employee_ID and c.UserID = l.Customer_ID and  l.Branch_ID = b.BranchID;
+                SELECT lt.Loan_Type, l.Amount, l.Loan_ID, c.Name, e.Name, l.Loan_State, b.computed_name
+                FROM Loan AS l
+                LEFT JOIN Loan_Type AS lt ON lt.loan_TypeID = l.Loan_Type_ID
+                LEFT JOIN [User] AS c ON c.UserID = l.Customer_ID
+                LEFT JOIN [User] AS e ON e.UserID = l.Employee_ID
+                LEFT JOIN Branch AS b ON l.Branch_ID = b.BranchID;
             """
             self.cursor.execute(sql)
         elif customer_id:
             sql = """
-                SELECT lt.Loan_Type,l.Amount,l.Loan_ID,c.Name,e.Name,l.Loan_State,b.computed_name 
-                FROM Loan_Type as lt,Loan as l,[User] as c,[User] as e,Branch as b
-                WHERE lt.loan_TypeID = l.Loan_Type_ID and l.Customer_ID = ? and e.UserID = l.Employee_ID and c.UserID = l.Customer_ID and  l.Branch_ID = b.BranchID
+                SELECT lt.Loan_Type, l.Amount, l.Loan_ID, c.Name, e.Name, l.Loan_State, b.computed_name
+                FROM Loan AS l
+                LEFT JOIN Loan_Type AS lt ON lt.loan_TypeID = l.Loan_Type_ID
+                LEFT JOIN [User] AS c ON c.UserID = l.Customer_ID
+                LEFT JOIN [User] AS e ON e.UserID = l.Employee_ID
+                LEFT JOIN Branch AS b ON l.Branch_ID = b.BranchID
+                WHERE l.Customer_ID = ?
             """
             if state:
-                sql += f"and Loan_State = '{state}'"
+                sql += f"and l.Loan_State = '{state}';"
             else:
                 sql += ';'
             self.cursor.execute(sql, (customer_id,))
         else:
             sql = """
-                SELECT lt.Loan_Type,l.Amount,l.Loan_ID,c.Name,e.Name,l.Loan_State,b.computed_name 
-                FROM Loan_Type as lt,Loan as l,[User] as c,[User] as e,Branch as b
-                WHERE lt.loan_TypeID = l.Loan_Type_ID  and e.UserID = l.Employee_ID and c.UserID = l.Customer_ID and l.Branch_ID = b.BranchID
-                AND ((l.Employee_ID = ? and l.Loan_State = 'accepted') OR (l.Loan_State = 'opened' AND l.Branch_ID = ?));
+                SELECT lt.Loan_Type, l.Amount, l.Loan_ID, c.Name, e.Name, l.Loan_State, b.computed_name
+                FROM Loan AS l
+                LEFT JOIN Loan_Type AS lt ON lt.loan_TypeID = l.Loan_Type_ID
+                LEFT JOIN [User] AS c ON c.UserID = l.Customer_ID
+                LEFT JOIN [User] AS e ON e.UserID = l.Employee_ID
+                LEFT JOIN Branch AS b ON l.Branch_ID = b.BranchID
+                WHERE (l.Employee_ID = ? AND l.Loan_State = 'accepted')
+                OR (l.Loan_State = 'opened' AND l.Branch_ID = ?);
             """
             self.cursor.execute(sql, (employee_id, branch_id))
         rows = self.cursor.fetchall()

@@ -51,7 +51,7 @@ class Customer(user.User):
             print('Invalid Index')
             return
         try:
-            loans[loan_index].change_loan_state('opened')
+            self.sql.change_loan_state(loans[loan_index].id,'opened')
             print('Operation Started Successfully')
         except Exception  as e:
             print(f'An Error Occured : {e}')

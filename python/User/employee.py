@@ -119,14 +119,18 @@ class Employee(user.User):
         else:
             print(accept_loan_options)
         option = int(input('Your Action : '))
-        if option == 1 and is_opened:
-            choosen_loan.change_loan_state('accepted')
-            choosen_loan.set_employee_id(self.id)
-        elif option == 2 and is_opened:
-            choosen_loan.change_loan_state('rejected')
-            choosen_loan.set_employee_id(self.id)
-        elif option == 1 and not is_opened:
-            choosen_loan.change_loan_state('paid')
+        try:
+            if option == 1 and is_opened:
+                self.sql.change_loan_state(choosen_loan.id,'accepted')
+                self.sql.set_employee_id(choosen_loan.id,self.id)
+            elif option == 2 and is_opened:
+                self.sql.change_loan_state(choosen_loan.id,'rejected')
+                self.sql.set_employee_id(choosen_loan.id,self.id)
+            elif option == 1 and not is_opened:
+                self.sql.change_loan_state(choosen_loan.id,'paid')
+            print('State Changed Successfully !!')
+        except Exception as e:
+            print(e)
 
             
         
