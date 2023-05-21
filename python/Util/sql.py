@@ -75,7 +75,6 @@ def get_branch_name(branch_id):
 
 def get_customer_name(customer_id):
     cursor, connection = create_connection()
-    print(customer_id)
     sql = """
         SELECT Name FROM [User] WHERE UserID = ?;
     """
@@ -85,12 +84,11 @@ def get_customer_name(customer_id):
     connection.commit()
     cursor.close()
     connection.close()
-    print(rows[0])
     return rows[0]
 
 
 def get_employee_name(employee_id):
-    get_customer_name(employee_id)
+    return get_customer_name(employee_id)
 
 
 def get_accounts(customer_id):
@@ -118,15 +116,16 @@ def get_loans(customer_id=False,state = False ,employee_id=False, branch_id=Fals
 
     if not customer_id and not employee_id:
         sql = """
-            SELECT lt.Loan_Type,l.Amount,l.Loan_ID,l.Customer_ID,l.Employee_ID,l.Branch_ID,l.Loan_State 
-            FROM Loan_Type as lt,Loan as l WHERE lt.loan_TypeID = l.Loan_Type_ID;
+            SELECT lt.Loan_Type,l.Amount,l.Loan_ID,c.Name,e.Name,l.Loan_State,b.computed_name 
+            FROM Loan_Type as lt,Loan as l,[User] as c,[User] as e,Branch as b 
+            WHERE lt.loan_TypeID = l.Loan_Type_ID and e.UserID = l.Employee_ID and c.UserID = l.Customer_ID and  l.Branch_ID = b.BranchID;
         """
         cursor.execute(sql)
     elif customer_id:
         sql = """
-            SELECT lt.Loan_Type,l.Amount,l.Loan_ID,l.Customer_ID,l.Employee_ID,l.Branch_ID,l.Loan_State 
-            FROM Loan_Type as lt,Loan as l 
-            WHERE lt.loan_TypeID = l.Loan_Type_ID and l.Customer_ID = ?
+            SELECT lt.Loan_Type,l.Amount,l.Loan_ID,c.Name,e.Name,l.Loan_State,b.computed_name 
+            FROM Loan_Type as lt,Loan as l,[User] as c,[User] as e,Branch as b
+            WHERE lt.loan_TypeID = l.Loan_Type_ID and l.Customer_ID = ? and e.UserID = l.Employee_ID and c.UserID = l.Customer_ID and  l.Branch_ID = b.BranchID
         """
         if state:
             sql += f"and Loan_State = '{state}'"
@@ -135,9 +134,9 @@ def get_loans(customer_id=False,state = False ,employee_id=False, branch_id=Fals
         cursor.execute(sql, (customer_id,))
     else:
         sql = """
-            SELECT lt.Loan_Type, l.Amount, l.Loan_ID, l.Customer_ID, l.Employee_ID, l.Branch_ID, l.Loan_State 
-            FROM Loan_Type as lt, Loan as l
-            WHERE lt.loan_TypeID = l.Loan_Type_ID 
+            SELECT lt.Loan_Type,l.Amount,l.Loan_ID,c.Name,e.Name,l.Loan_State,b.computed_name 
+            FROM Loan_Type as lt,Loan as l,[User] as c,[User] as e,Branch as b
+            WHERE lt.loan_TypeID = l.Loan_Type_ID  and e.UserID = l.Employee_ID and c.UserID = l.Customer_ID and l.Branch_ID = b.BranchID
             AND ((l.Employee_ID = ? and l.Loan_State = 'accepted') OR (l.Loan_State = 'opened' AND l.Branch_ID = ?));
         """
         cursor.execute(sql, (employee_id, branch_id))
@@ -145,7 +144,7 @@ def get_loans(customer_id=False,state = False ,employee_id=False, branch_id=Fals
     loans = []
     for row in rows:
         loans.append(loan.Loan(row[0], row[1], row[2],
-                     row[3], row[4], row[6], row[5]))
+                     row[3], row[4], row[5], row[6]))
     connection.commit()
     cursor.close()
     connection.close()
@@ -345,7 +344,7 @@ def get_employees(user_id = False):
         WHERE e.EmployeeID = u.UserID
     """
     if user_id:
-        sql += f"AND e.EmployeeID = {user_id};"
+        sql += f" AND e.EmployeeID = {user_id};"
     else:
         sql += ';'
     cursor.execute(sql)

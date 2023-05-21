@@ -68,6 +68,7 @@ class Admin(user.User):
         login = input("Enter The Employee login Please: ")
         try:
             sql.create_employee(name,login,position,hire_date,branches[index].id)
+            print('Employee Created Successfully !!')
         except Exception as e:
             print(f'Error : {e}')
 

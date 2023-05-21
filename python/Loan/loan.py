@@ -19,13 +19,13 @@ class Loan():
     def get_branch_name(self):
         if not self.branch_id:
             return 'Not Assigned Yet'
-        return sql.get_branch_name(self.branch_id)
+        return self.branch_id
     def get_employee_name(self):
         if not self.employee_id:
             return 'Not Assigned Yet'
-        return sql.get_employee_name(self.employee_id)
+        return self.employee_id
     def get_customer_name(self):
-        return sql.get_customer_name(self.customer_id)
+        return self.customer_id
     def change_loan_state(self,state):
         sql.change_loan_state(self.id,state)
     def set_employee_id(self,employee_id):
