@@ -81,7 +81,19 @@ class SQL():
     def get_employee_name(self,employee_id):
         return self.get_customer_name(employee_id)
 
+    def get_accounts_for_report(self):
+        sql = """
+            SELECT a.AccountID, a.AccountType, a.Balance,u.UserID,u.Name,b.computed_name 
+            FROM Accounts as a,[User] as u,Branch as b,Customer as c
+            WHERE a.CustomerID = u.UserID and c.BranchID = b.BranchID and c.CustomerID = u.UserID;
+        """
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+        accounts = []
+        for row in rows:
+            accounts.append(account.Account(row[0], row[1], row[2], row[3],row[4],row[5]))
 
+        return accounts
     def get_accounts(self,customer_id):
         sql = """
             SELECT AccountID, AccountType, Balance, CustomerID FROM Accounts WHERE CustomerID = ?;
@@ -189,6 +201,41 @@ class SQL():
 
         return bank.Bank(bank_name, bank_city, bank_zone, bank_street, 6)
 
+    def get_branches_for_report(self):
+        sql = """
+                SELECT br.City,br.Zone,br.Street,br.BranchID,bn.Name,bn.BankID,
+                (SELECT COUNT(*) FROM Customer WHERE BranchID = br.BranchID),
+                (SELECT COUNT(*) FROM Employee WHERE Branch_Number = br.BranchID),
+                (SELECT COUNT(*) FROM Loan WHERE Branch_ID = br.BranchID),
+                (SELECT COUNT(a.AccountID) 
+                FROM Accounts a,Customer c
+                WHERE c.BranchID = br.BranchID and a.CustomerID = c.CustomerID)
+                FROM Bank as bn,
+                Branch as br
+                WHERE br.Bank_Code = bn.BankID;
+        """
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+        branches = []
+        for row in rows:
+            branches.append(branch.Branch(
+                row[5], row[0], row[1], row[2], row[3], row[4],row[6],row[7],row[8],row[9]))
+
+        return branches
+    def get_banks_for_report(self):
+        sql = """
+            SELECT b.Name,b.City,b.Zone,b.Street,BankID, COUNT(br.Bank_Code) AS branch_count
+            FROM Bank b
+            LEFT JOIN Branch br ON b.BankID = br.Bank_Code
+            GROUP BY b.Name,b.City,b.[Zone],b.City,b.Street,B.BankID;
+        """
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+        banks = []
+        for row in rows:
+            banks.append(bank.Bank(row[0], row[1], row[2], row[3], row[4],row[5]))
+
+        return banks
 
     def get_banks(self):
         sql = """

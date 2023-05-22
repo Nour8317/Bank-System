@@ -221,73 +221,72 @@ class Admin(user.User):
     def show_banks(self):
         window = tk.Tk()
         window.title("Banks") 
-        table = ttk.Treeview(window, columns=("Bank Name", "Bank Code", "Bank Address"))
+        table = ttk.Treeview(window, columns=("Bank Name", "Bank Address","Branches"))
         
         table.heading("#0", text="ID")
         table.heading("Bank Name", text="Bank Name")
-        table.heading("Bank Code", text="Bank Code")
         table.heading("Bank Address", text="Bank Address")
-        # data=sql.get_data
-        # for i, (name, code, address) in enumerate(data, start=1):
-        #     table.insert("", "end", text=str(i), values=(name, code, address))
+        table.heading("Branches", text="Branches Count")
+
+        banks = self.sql.get_banks_for_report()
+        total_branches = sum([b.branches_count for b in banks])
+        for i,bank in enumerate(banks, start=1):
+            table.insert("", "end", text=str(i), values=(bank.name, f'{bank.city} - {bank.zone} - {bank.street}', bank.branches_count))
+        table.insert("", "end", text="Total", values=("","",total_branches))
+
         table.pack()
         window.mainloop() 
     def show_branches(self):
-       window = tk.Tk()
-       window.title("Branches")
+        window = tk.Tk()
+        window.title("Branches")
     
-       table = ttk.Treeview(window, columns=("Bank Name", "Bank Code", "Branch Number", "Branch Address"))
-            
-       table.heading("#0", text="ID")
-       table.heading("Bank Name", text="Bank Name")
-       table.heading("Bank Code", text="Bank Code")
-       table.heading("Branch Number", text="Branch Number")
-       table.heading("Branch Address", text="Branch Address")
-        # types = self.sql.get_banks()
-        # for i, (bank_name, bank_code, branch_number, branch_address) in enumerate(types, start=1):
-        #     table.insert("", "end", text=str(i), values=(bank_name, bank_code, branch_number, branch_address))
-        
-       table.pack()
-        
-       window.mainloop() 
+        table = ttk.Treeview(window, columns=("Bank Name","Branch Address","n_e","n_c","n_a","n_l"))
+                
+        table.heading("#0", text="ID")
+        table.heading("Bank Name", text="Bank Name")
+        table.heading("Branch Address", text="Branch Address")
+        table.heading("n_e", text="No. Of employees")
+        table.heading("n_c", text="No. Of Customers")
+        table.heading("n_a", text="No. Of Accounts")
+        table.heading("n_l", text="No. Of loans")
+        branches = self.sql.get_branches_for_report()
+        t_c = sum([b.no_of_customers for b in branches])
+        t_e = sum([b.no_of_employees for b in branches])
+        t_l = sum([b.no_of_loans for b in branches])
+        t_a = sum([b.no_of_account for b in branches])
 
+        for i,branch in enumerate(branches, start=1):
+            table.insert("", "end", text=str(i), values=
+(branch.bank_name, f'{branch.city} - {branch.zone} - {branch.street}', 
+ branch.no_of_employees,branch.no_of_customers,branch.no_of_account,branch.no_of_loans)
+                         )
+        table.insert("", "end", text="Total", values=("","",t_e,t_c,t_a,t_l))
+        table.pack()
+        window.mainloop() 
 
     def show_loans(self):
-     window = tk.Tk()
-     window.title("Loans")
-     table = ttk.Treeview(window, columns=("Loan Number", "Loan Type", "Loan Amount", "Customer Name", "Employee Name"))
-     table.heading("#0", text="ID")
-     table.heading("Loan Number", text="Loan Number")
-     table.heading("Loan Type", text="Loan Type")
-     table.heading("Loan Amount", text="Loan Amount")
-     table.heading("Customer Name", text="Customer Name")
-     table.heading("Employee Name", text="Employee Name")
-    
-    # types = self.sql.get_loans()
-    # for i, (loan_number, loan_type, loan_amount, customer_name, employee_name) in enumerate(types, start=1):
-    #     table.insert("", "end", text=str(i), values=(loan_number, loan_type, loan_amount, customer_name, employee_name))
-    
-     table.pack()
-    
-     window.mainloop()
+        loans = self.sql.get_loans()
+        _,table = self.view_loans_gui(loans)
+        table.insert("", "end",values=("Total","","","","","",sum([l.amount for l in loans])))
+        table.insert("", "end",values=("Total Paid","","","","","",sum([l.amount for l in loans if l.state == 'paid'])))
+        table.insert("", "end",values=("Total Accepted","","","","","",sum([l.amount for l in loans if l.state == 'accepted'])))
+        table.insert("", "end",values=("Total Rejected","","","","","",sum([l.amount for l in loans if l.state == 'rejected'])))
 
     def show_account(self):
         
-        window = tk.Tk()
-        window.title("Accounts")
-        table = ttk.Treeview(window, columns=("Account Number", "Account Balance", "Account Type"))
-        table.heading("#0", text="ID")
-        table.heading("Account Number", text="Account Number")
-        table.heading("Account Balance", text="Account Balance")
-        table.heading("Account Type", text="Account Type")
-        
-        # types = self.sql.get_accounts()
-        # for i, (account_number, account_balance, account_type) in enumerate(types, start=1):
-        #     table.insert("", "end", text=str(i), values=(account_number, account_balance, account_type))
-        
-        table.pack()
-        
-        window.mainloop()       
+        accounts_window = Toplevel()
+        accounts_window.title("Accounts")
+        accounts_window.configure(bg="#d6e2e0")
+        accounts_window.resizable(False, False)
+        tree = ttk.Treeview(accounts_window, columns=("c","b","type", "balance"), show="headings")
+        tree.heading("c", text="Customer")
+        tree.heading("b", text="Branch")
+        tree.heading("type", text="Type")
+        tree.heading("balance", text="Balance")
+        tree.grid(row=0, column=0, padx=10, pady=10)
+        accounts = self.sql.get_accounts_for_report()
+        for account in accounts:
+            tree.insert("", "end", values=(account.customer_name,account.branch_name,account.type, account.balance))
 
 
     def show_report(self):
