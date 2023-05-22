@@ -71,7 +71,7 @@ class Customer(user.User):
         messagebox.showinfo("Loan Started", f"Loan {loan_id} started successfully!")
     
     def start_loan(self):
-        loans = self.sql.get_loans(customer_id = self.id)
+        loans = self.sql.get_loans(customer_id = self.id,state = 'draft')
         branch_window,tree = self.view_loans_gui(loans)
         branch_window.title("Start Loan")
         branch_window.configure(bg="#d6e2e0")
@@ -106,7 +106,7 @@ class Customer(user.User):
         tree.heading("balance", text="Balance")
         tree.grid(row=0, column=0, padx=10, pady=10)
 
-        accounts = self.sql.get_accounts()
+        accounts = self.sql.get_accounts(self.id)
 
         for account in accounts:
             tree.insert("", "end", values=(account.type, account.balance, account.loan_type_id))
