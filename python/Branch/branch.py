@@ -12,3 +12,5 @@ class Branch():
         self.city = city
         self.zone = zone
         self.street = street
+
+
