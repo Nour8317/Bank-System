@@ -100,16 +100,13 @@ class Customer(user.User):
         accounts_window.title("Accounts")
         accounts_window.configure(bg="#d6e2e0")
         accounts_window.resizable(False, False)
-
-        tree = ttk.Treeview(accounts_window, columns=("type", "balance", "loan_type_id"), show="headings")
+        tree = ttk.Treeview(accounts_window, columns=("type", "balance"), show="headings")
         tree.heading("type", text="Type")
         tree.heading("balance", text="Balance")
         tree.grid(row=0, column=0, padx=10, pady=10)
-
         accounts = self.sql.get_accounts(self.id)
-
         for account in accounts:
-            tree.insert("", "end", values=(account.type, account.balance, account.loan_type_id))
+            tree.insert("", "end", values=(account.type, account.balance))
 
     def page(self):
         window = Tk()
