@@ -218,6 +218,8 @@ class Admin(user.User):
     def view_loans_table(self, loans):
         loans = self.sql.get_loans()
         self.view_loans_gui(loans)
+    def show_report(self):
+       print("report")    
 
 
 
@@ -232,29 +234,35 @@ class Admin(user.User):
     
         lbl_admin = Label(admin_window, text="Welcome, Admin", font=("Helvetica", 30), fg="#152238", bg="#d6e2e0")
         lbl_admin.config(highlightthickness=0)
-        lbl_admin.pack(pady=50)
-        # First Row
+        lbl_admin.pack(pady=30)
         frame1 = Frame(admin_window, bg="#d6e2e0")
-        frame1.pack(pady=(100, 0), padx=80)
+        frame1.pack(pady=(50, 0), padx=80)
 
         btn_add_employee = Button(frame1, text="Add Employee", command=self.add_employee, bg="#152238", fg="white", height=5, width=30)
-        btn_add_employee.pack(side="left" ,  padx=(0,50))
+        btn_add_employee.pack(side="left", padx=(0, 50))
 
         btn_add_bank = Button(frame1, text="Add Bank", command=self.add_bank, bg="#152238", fg="white", height=5, width=30)
         btn_add_bank.pack(side="left", padx=(0, 50))
 
-        btn_add_branch = Button(frame1, text="Add Branch", command=self.add_branch, bg="#152238", fg="white", height=5, width=30)
-        btn_add_branch.pack(side="left")
 
-        # Second Row
         frame2 = Frame(admin_window, bg="#d6e2e0")
-        frame2.pack(pady=50)
+        frame2.pack(pady=(50, 0), padx=80)
 
         btn_view_loan_types = Button(frame2, text="View All Loan Types", command=self.view_all_loan_types, bg="#152238", fg="white", height=5, width=30)
-        btn_view_loan_types.pack(side="left")
+        btn_view_loan_types.pack(side="left", padx=(0, 50))
 
-        btn_view_loans = Button(frame2, text="View Loans", command=self.view_loans, bg="#152238", fg="white", height=5, width=30)
-        btn_view_loans.pack(side="left", padx=(50, 0))
+        btn_add_branch = Button(frame2, text="Add Branch", command=self.add_branch, bg="#152238", fg="white", height=5, width=30)
+        btn_add_branch.pack(side="left", padx=(0, 50))
+
+
+        frame3 = Frame(admin_window, bg="#d6e2e0")
+        frame3.pack(pady=(50, 0), padx=80)
+
+        btn_view_loans = Button(frame3, text="View Loans", command=self.view_loans, bg="#152238", fg="white", height=5, width=30)
+        btn_view_loans.pack(side="left", padx=(0, 50))
+
+        btn_view_loan_types = Button(frame3, text="Meaningful Report", command=self.show_report, bg="#152238", fg="white", height=5, width=30)
+        btn_view_loan_types.pack(side="left", padx=(0, 50))
 
         # Start the main loop for the admin window
         return admin_window
