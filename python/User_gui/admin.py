@@ -1,4 +1,6 @@
+from asyncio import DatagramProtocol
 from curses import window
+import dataclasses
 from datetime import date
 from tkinter import *
 from tkinter import messagebox
@@ -109,7 +111,6 @@ class Admin(user.User):
         selection_combo = ttk.Combobox(branch_window, textvariable=banks_dict, values=list(banks_dict.keys()))
         selection_combo.grid(row=4, column=1, padx=10, pady=(20, 0))
 
-        # Create a button to submit the branch information
         btn_submit = Button(branch_window, text="Submit", command=lambda: self.submit_branch_info(
             banks_dict[selection_combo.get()], entry_branch_city.get(), entry_branch_zone.get(), entry_branch_street.get(), bank_name.get()),
                             bg="#152238", fg="white", height=1, width=16)
@@ -190,42 +191,138 @@ class Admin(user.User):
         messagebox.showerror("Error", f"An error occurred while adding the Employee: \n{str(e)}")
 
     def view_all_loan_types(self):
-        # Create a new window for displaying loan types
+        
         loan_types_window = Toplevel()
         loan_types_window.title("Loan Types")
         loan_types_window.configure(bg="#d6e2e0")
         loan_types_window.resizable(False, False)
 
-        # Create a treeview widget to display the loan types in a table
+       
         tree = ttk.Treeview(loan_types_window, columns=("Name", "ID", "Branch"), show="headings")
         tree.heading("Name", text="Name")
         tree.heading("ID", text="ID")
         tree.grid(row=0, column=0, padx=10, pady=10)
 
-        # Fetch all loan types from the database
         types = self.sql.get_all_loan_types()
 
-        # Insert loan types into the treeview
         for i, loan_type in enumerate(types, start=1):
             tree.insert("", "end", values=(loan_type.name, loan_type.id))
 
 
     def view_loans(self):
-        # Fetch loans from the database
+
         loans = self.sql.get_loans()
         self.view_loans_table(loans)
 
     def view_loans_table(self, loans):
         loans = self.sql.get_loans()
         self.view_loans_gui(loans)
+
+    def show_banks(self):
+        window = tk.Tk()
+        window.title("Banks") 
+        table = ttk.Treeview(window, columns=("Bank Name", "Bank Code", "Bank Address"))
+        
+        table.heading("#0", text="ID")
+        table.heading("Bank Name", text="Bank Name")
+        table.heading("Bank Code", text="Bank Code")
+        table.heading("Bank Address", text="Bank Address")
+        # data=sql.get_data
+        # for i, (name, code, address) in enumerate(data, start=1):
+        #     table.insert("", "end", text=str(i), values=(name, code, address))
+        table.pack()
+        window.mainloop() 
+    def show_branches(self):
+       window = tk.Tk()
+       window.title("Branches")
+    
+       table = ttk.Treeview(window, columns=("Bank Name", "Bank Code", "Branch Number", "Branch Address"))
+            
+       table.heading("#0", text="ID")
+       table.heading("Bank Name", text="Bank Name")
+       table.heading("Bank Code", text="Bank Code")
+       table.heading("Branch Number", text="Branch Number")
+       table.heading("Branch Address", text="Branch Address")
+        # types = self.sql.get_banks()
+        # for i, (bank_name, bank_code, branch_number, branch_address) in enumerate(types, start=1):
+        #     table.insert("", "end", text=str(i), values=(bank_name, bank_code, branch_number, branch_address))
+        
+       table.pack()
+        
+       window.mainloop() 
+
+
+    def show_loans(self):
+     window = tk.Tk()
+     window.title("Loans")
+     table = ttk.Treeview(window, columns=("Loan Number", "Loan Type", "Loan Amount", "Customer Name", "Employee Name"))
+     table.heading("#0", text="ID")
+     table.heading("Loan Number", text="Loan Number")
+     table.heading("Loan Type", text="Loan Type")
+     table.heading("Loan Amount", text="Loan Amount")
+     table.heading("Customer Name", text="Customer Name")
+     table.heading("Employee Name", text="Employee Name")
+    
+    # types = self.sql.get_loans()
+    # for i, (loan_number, loan_type, loan_amount, customer_name, employee_name) in enumerate(types, start=1):
+    #     table.insert("", "end", text=str(i), values=(loan_number, loan_type, loan_amount, customer_name, employee_name))
+    
+     table.pack()
+    
+     window.mainloop()
+
+    def show_account(self):
+        
+        window = tk.Tk()
+        window.title("Accounts")
+        table = ttk.Treeview(window, columns=("Account Number", "Account Balance", "Account Type"))
+        table.heading("#0", text="ID")
+        table.heading("Account Number", text="Account Number")
+        table.heading("Account Balance", text="Account Balance")
+        table.heading("Account Type", text="Account Type")
+        
+        # types = self.sql.get_accounts()
+        # for i, (account_number, account_balance, account_type) in enumerate(types, start=1):
+        #     table.insert("", "end", text=str(i), values=(account_number, account_balance, account_type))
+        
+        table.pack()
+        
+        window.mainloop()       
+
+
     def show_report(self):
-       print("report")    
+        admin_window = Tk()
+        admin_window.title("report page")
+        admin_window.configure(bg="#d6e2e0")
+        admin_window.geometry("850x600")
+        admin_window.resizable(False, False)
+    
+        lbl_admin = Label(admin_window, text="choose what you want to view", font=("Helvetica", 30), fg="#152238", bg="#d6e2e0")
+        lbl_admin.config(highlightthickness=0)
+        lbl_admin.pack(pady=30)
+        frame1 = Frame(admin_window, bg="#d6e2e0")
+        frame1.pack(pady=(50, 0), padx=80)
+
+        btn_add_employee = Button(frame1, text="list of banks", command=self.show_banks, bg="#152238", fg="white", height=5, width=30)
+        btn_add_employee.pack(side="left", padx=(0, 50))
+
+        btn_add_bank = Button(frame1, text="list of branches", command=self.show_branches, bg="#152238", fg="white", height=5, width=30)
+        btn_add_bank.pack(side="left", padx=(0, 50))
+
+
+        frame2 = Frame(admin_window, bg="#d6e2e0")
+        frame2.pack(pady=(50, 0), padx=80)
+
+        btn_view_loan_types = Button(frame2, text="list of loans", command=self.show_loans, bg="#152238", fg="white", height=5, width=30)
+        btn_view_loan_types.pack(side="left", padx=(0, 50))
+
+        btn_add_branch = Button(frame2, text="list of accounts", command=self.show_account, bg="#152238", fg="white", height=5, width=30)
+        btn_add_branch.pack(side="left", padx=(0, 50))   
 
 
 
 
     def page(self):
-        # Create the admin page window
         admin_window = Tk()
         admin_window.title("Admin Page")
         admin_window.configure(bg="#d6e2e0")
@@ -264,6 +361,6 @@ class Admin(user.User):
         btn_view_loan_types = Button(frame3, text="Meaningful Report", command=self.show_report, bg="#152238", fg="white", height=5, width=30)
         btn_view_loan_types.pack(side="left", padx=(0, 50))
 
-        # Start the main loop for the admin window
+        
         return admin_window
         
