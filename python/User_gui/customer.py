@@ -64,34 +64,8 @@ class Customer(user.User):
             messagebox.showerror("Error", "An error occurred while adding the loan.")
 
     def show_loans_table(self):
-        loan_types_window = Toplevel()
-        loan_types_window.title("Loans")
-        loan_types_window.configure(bg="#d6e2e0")
-        loan_types_window.resizable(False, False)
-
-        tree = ttk.Treeview(loan_types_window, columns=("loan_id", "state", "branchNO", "amount", "customer_id", "employee_id", "loan_type_id"), show="headings")
-        tree.heading("loan_id", text="Loan ID")
-        tree.heading("state", text="State")
-        tree.heading("branchNO", text="Branch Number")
-        tree.heading("amount", text="Amount")
-        tree.heading("customer_id", text="Customer ID")
-        tree.heading("employee_id", text="Employee ID")
-        tree.heading("loan_type_id", text="Loan Type ID")
-        tree.grid(row=0, column=0, padx=10, pady=10)
-
-        types = self.sql.get_loans()
-
-        for loan in types:
-            tree.insert("", "end", values=(loan.loan_id, loan.state, loan.branch_no, loan.amount, loan.customer_id, loan.employee_id, loan.loan_type_id))
-
-        lbl_loan_id = Label(loan_types_window, text="Write Loan ID:")
-        lbl_loan_id.grid(row=1, column=0, padx=10, pady=10)
-
-        entry_loan_id = Entry(loan_types_window)
-        entry_loan_id.grid(row=1, column=1, padx=10, pady=10)
-
-        btn_start_loan = Button(loan_types_window, text="Start Loan", command=lambda: self.show_loan(entry_loan_id.get()), bg="#173A69", fg="white", height=2, width=10)
-        btn_start_loan.grid(row=1, column=2, padx=10, pady=10)
+        loans = self.sql.get_loans(customer_id = self.id)
+        self.view_loans_gui(loans)
 
     def show_loan(self, loan_id):
         messagebox.showinfo("Loan Started", f"Loan {loan_id} started successfully!")

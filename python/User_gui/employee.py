@@ -45,12 +45,6 @@ class Employee(User):
         entry_ssn = Entry(customer_window)
         entry_ssn.grid(row=1, column=1, padx=10, pady=(20, 0))
 
-        lbl_branch_id = Label(customer_window, text="branch id:", bg="#d7e3e1",fg="#152238")
-        lbl_ssn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
-
-        entry_branch_id = Entry(customer_window)
-        entry_branch_id.grid(row=1, column=1, padx=10, pady=(20, 0))
-
         lbl_street = Label(customer_window, text="Street:", bg="#d7e3e1",fg="#152238")
         lbl_street.grid(row=2, column=0, padx=(90, 0), pady=(20, 0))
 
@@ -71,38 +65,12 @@ class Employee(User):
 
         # Create a button to submit the customer information
         btn_submit = Button(customer_window, text="Submit", command=lambda: self.submit_customer_info(
-            entry_name.get(),entry_email.get(), entry_ssn.get(),entry_branch_id.get(), entry_street.get(), entry_city.get(), entry_zone.get(), customer_window),
+            entry_name.get(),entry_email.get(), entry_ssn.get(), entry_street.get(), entry_city.get(), entry_zone.get(), customer_window),
                             bg="#152238", fg="white", height=1, width=16)
         btn_submit.grid(row=5, column=0, columnspan=2, padx=(140, 0), pady=10)
-    def submit_customer_info(self, name,email, ssn, branch_id, street, city, zone, customer_window):
+    def submit_customer_info(self, name,email, ssn, street, city, zone, customer_window):
      try:
-            # Establish a connection to the database
-            server = '34.123.49.27'
-            database = 'BankSystem'
-            username = 'sqlserver'
-            password = '123456'
-            driver = '{ODBC Driver 17 for SQL Server}'
-
-            connection_string = f"DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}"
-            connection = pyodbc.connect(connection_string)
-            cursor = connection.cursor()
-
-            insert_user_query = "INSERT INTO [User] (Name, Email, Password, UserType) VALUES (?, ?, ?, ?)"
-            user_values = (name, email,None, "employee")
-            cursor.execute(insert_user_query, user_values)
-            connection.commit()
-
-            # Retrieve the generated UserID for the new user
-            select_user_query = "SELECT UserID FROM [User] WHERE Email = ?"
-            cursor.execute(select_user_query, (email,))
-            user_row = cursor.fetchone()
-            user_id = user_row.UserID
-
-            # Insert a record into the Customer table
-            insert_customer_query = "INSERT INTO Customer (SSN, Street, City, CustomerID, Zone, BranchID) VALUES (?, ?, ?, ?, ?, ?)"
-            customer_values = (ssn, street, city, user_id, zone, branch_id)
-            cursor.execute(insert_customer_query, customer_values)
-            connection.commit()
+            self.sql.create_customer(name,email,city,street,zone,ssn,self.branch_id)
 
             messagebox.showinfo("Success", "Customer added successfully!")
             customer_window.destroy()
@@ -137,8 +105,8 @@ class Employee(User):
 
     def view_loans(self):
         # Fetch loans from the database
-        loans = self.sql.get_loans()
-        self.view_loans_table(loans)
+        loans = self.sql.get_loans(employee_id = self.id,branch_id = self.branch_id)
+        self.view_loans_gui(loans)
 
     def view_loans_table(self, loans):
         # Create a new window for displaying loans
