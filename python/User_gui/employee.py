@@ -39,14 +39,14 @@ class Employee(User):
         entry_email = Entry(customer_window)
         entry_email.grid(row=0, column=1, padx=10, pady=(70, 0))
 
-        lbl_snn = Label(customer_window, text="SNN:", bg="#d7e3e1",fg="#152238")
-        lbl_snn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
+        lbl_ssn = Label(customer_window, text="ssn:", bg="#d7e3e1",fg="#152238")
+        lbl_ssn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
 
-        entry_snn = Entry(customer_window)
-        entry_snn.grid(row=1, column=1, padx=10, pady=(20, 0))
+        entry_ssn = Entry(customer_window)
+        entry_ssn.grid(row=1, column=1, padx=10, pady=(20, 0))
 
         lbl_branch_id = Label(customer_window, text="branch id:", bg="#d7e3e1",fg="#152238")
-        lbl_snn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
+        lbl_ssn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
 
         entry_branch_id = Entry(customer_window)
         entry_branch_id.grid(row=1, column=1, padx=10, pady=(20, 0))
@@ -71,7 +71,7 @@ class Employee(User):
 
         # Create a button to submit the customer information
         btn_submit = Button(customer_window, text="Submit", command=lambda: self.submit_customer_info(
-            entry_name.get(),entry_email.get(), entry_snn.get(),entry_branch_id.get(), entry_street.get(), entry_city.get(), entry_zone.get(), customer_window),
+            entry_name.get(),entry_email.get(), entry_ssn.get(),entry_branch_id.get(), entry_street.get(), entry_city.get(), entry_zone.get(), customer_window),
                             bg="#152238", fg="white", height=1, width=16)
         btn_submit.grid(row=5, column=0, columnspan=2, padx=(140, 0), pady=10)
     def submit_customer_info(self, name,email, ssn, branch_id, street, city, zone, customer_window):
@@ -197,15 +197,15 @@ class Employee(User):
         entry_name = Entry(customer_window)
         entry_name.grid(row=0, column=1, padx=10, pady=(70, 0))
 
-        lbl_snn = Label(customer_window, text="Balance:", bg="#d7e3e1",fg="#152238")
-        lbl_snn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
+        lbl_ssn = Label(customer_window, text="Balance:", bg="#d7e3e1",fg="#152238")
+        lbl_ssn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
 
-        entry_snn = Entry(customer_window)
-        entry_snn.grid(row=1, column=1, padx=10, pady=(20, 0))
+        entry_ssn = Entry(customer_window)
+        entry_ssn.grid(row=1, column=1, padx=10, pady=(20, 0))
 
         # Create a button to submit the customer information
         btn_submit = Button(customer_window, text="Submit", command=lambda: self.create_account(
-            entry_name.get(), entry_snn.get(), customer_window),
+            entry_name.get(), entry_ssn.get(), customer_window),
                             bg="#152238", fg="white", height=1, width=16)
         btn_submit.grid(row=5, column=0, columnspan=2, padx=(130, 0), pady=10)
 
@@ -263,15 +263,15 @@ class Employee(User):
         entry_name = Entry(customer_window)
         entry_name.grid(row=0, column=1, padx=10, pady=(70, 0))
 
-        lbl_snn = Label(customer_window, text="New Name:", bg="#d7e3e1",fg="#152238")
-        lbl_snn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
+        lbl_ssn = Label(customer_window, text="New Name:", bg="#d7e3e1",fg="#152238")
+        lbl_ssn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
 
-        entry_snn = Entry(customer_window)
-        entry_snn.grid(row=1, column=1, padx=10, pady=(20, 0))
+        entry_ssn = Entry(customer_window)
+        entry_ssn.grid(row=1, column=1, padx=10, pady=(20, 0))
 
         # Create a button to submit the customer information
         btn_submit = Button(customer_window, text="Submit", command=lambda: self.update_namee(
-            entry_name.get(), entry_snn.get(), customer_window),
+            entry_name.get(), entry_ssn.get(), customer_window),
                             bg="#152238", fg="white", height=1, width=16)
         btn_submit.grid(row=5, column=0, columnspan=2, padx=(160, 0), pady=10) 
     def update_namee(self, customer_id, new_name, customer_window):
@@ -323,15 +323,15 @@ class Employee(User):
         entry_name = Entry(customer_window)
         entry_name.grid(row=0, column=1, padx=10, pady=(70, 0))
 
-        lbl_snn = Label(customer_window, text="New E-mail:", bg="#d7e3e1",fg="#152238")
-        lbl_snn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
+        lbl_ssn = Label(customer_window, text="New E-mail:", bg="#d7e3e1",fg="#152238")
+        lbl_ssn.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
 
-        entry_snn = Entry(customer_window)
-        entry_snn.grid(row=1, column=1, padx=10, pady=(20, 0))
+        entry_ssn = Entry(customer_window)
+        entry_ssn.grid(row=1, column=1, padx=10, pady=(20, 0))
 
         # Create a button to submit the customer information
         btn_submit = Button(customer_window, text="Submit", command=lambda: self.update_email(
-            entry_name.get(), entry_snn.get(), customer_window),
+            entry_name.get(), entry_ssn.get(), customer_window),
                             bg="#152238", fg="white", height=1, width=16)
         btn_submit.grid(row=5, column=0, columnspan=2, padx=(160, 0), pady=10)    
 

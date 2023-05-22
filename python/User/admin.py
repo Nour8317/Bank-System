@@ -100,24 +100,3 @@ class Admin(user.User):
                 self.add_employee()
 
 
-# banks = self.sql.get_banks()
-#         banks_dict = {bank.name : bank.id for bank in banks}
-#         banks_dict[''] = 0
-#         lbl_banks = Label(branch_window, text="Bank :", bg="#d6e2e0",fg="#152238")
-#         lbl_banks.grid(row=4, column=0, padx=(90, 0), pady=(20, 0))
-#         bank_name = tk.StringVar(branch_window)
-#         selection_combo = ttk.Combobox(branch_window, textvariable=banks_dict, values=list(banks_dict.keys()))
-#         selection_combo.grid(row=4, column=1, padx=10, pady=(20, 0))
-#         # Create a button to submit the branch information
-#         btn_submit = Button(branch_window, text="Submit", command=lambda: self.submit_branch_info(
-#             banks_dict[selection_combo.get()], entry_branch_city.get(), entry_branch_zone.get(), entry_branch_street.get(), bank_name.get()),
-#                             bg="#152238", fg="white", height=1, width=16)
-#         btn_submit.grid(row=5, column=0, columnspan=2, padx=(160, 0), pady=10)
-
-#     def submit_branch_info(self, bank_id, branch_city, branch_zone, branch_street, bank_name):
-#      try:
-
-#         self.sql.add_branch(branch_city,branch_zone,branch_street,bank_id,bank_name)
-#         messagebox.showinfo("Success", "branch created successfully!")
-#      except Exception as e:
-#         messagebox.showerror("Error", f"An error occurred while adding the branch:\n{str(e)}")

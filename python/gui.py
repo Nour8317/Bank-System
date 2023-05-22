@@ -24,7 +24,7 @@ class LoginPage:
         background_label = Label(root, image=self.background_photo)
         background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        login_image = Image.open(os.path.join(parent_directory,'E:/projects/Bank-System/python/back.jpg'))
+        login_image = Image.open(os.path.join(parent_directory,'E:/projects/Bank-System/python/log.png'))
         login_image = login_image.resize((180, 160), Image.ANTIALIAS)
         self.login_photo = ImageTk.PhotoImage(login_image)
         login_label = Label(root, image=self.login_photo,bg="#d8e4e2")

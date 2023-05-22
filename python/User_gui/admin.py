@@ -1,4 +1,5 @@
 from curses import window
+from datetime import date
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -107,6 +108,7 @@ class Admin(user.User):
         bank_name = tk.StringVar(branch_window)
         selection_combo = ttk.Combobox(branch_window, textvariable=banks_dict, values=list(banks_dict.keys()))
         selection_combo.grid(row=4, column=1, padx=10, pady=(20, 0))
+
         # Create a button to submit the branch information
         btn_submit = Button(branch_window, text="Submit", command=lambda: self.submit_branch_info(
             banks_dict[selection_combo.get()], entry_branch_city.get(), entry_branch_zone.get(), entry_branch_street.get(), bank_name.get()),
@@ -165,23 +167,24 @@ class Admin(user.User):
         bl_Employee_login.grid(row=6, column=1, padx=10, pady=(20, 0))   
 
         Branch = self.sql.get_branches()
-        Branch_dict = {Branch.name : Branch.id for Branch in Branch}
+        Branch_dict = {f" {Branch.bank_name} - {Branch.city} - {Branch.street}" : Branch.id for Branch in Branch}
         Branch_dict[''] = 0
         lbl_Branch = Label(branch_window, text="Branch :", bg="#d6e2e0",fg="#152238")
-        lbl_Branch.grid(row=7, column=1, padx=(90, 0), pady=(20, 0))
-        branch_ID = tk.StringVar(branch_window)
+        lbl_Branch.grid(row=7, column=0, padx=(90, 0), pady=(20, 0))
+        branch_name = tk.StringVar(branch_window)
         selection_combo = ttk.Combobox(branch_window, textvariable=Branch_dict, values=list(Branch_dict.keys()))
-        selection_combo.grid(row=8, column=1, padx=10, pady=(20, 0))
+        selection_combo.grid(row=7, column=1, padx=10, pady=(20, 0))
+
         # Create a button to submit the branch information
         btn_submit = Button(branch_window, text="Submit", command=lambda: self.submit_Employee_info(
-            Branch_dict[selection_combo.get()],  lbl_Employee_Name.get(),bl_Employee_login.get(),lbl_Employee_Position.get(),lbl_Employee_HireDay,branch_ID.get() ),
+            lbl_Employee_Name.get(),bl_Employee_login.get(),lbl_Employee_Position.get(),date(int(lbl_Employee_HireYear.get()),int(lbl_Employee_HireMonth.get()),int(lbl_Employee_HireDay.get())),Branch_dict[selection_combo.get()]),
                             bg="#152238", fg="white", height=1, width=16)
-        btn_submit.grid(row=7, column=0, columnspan=2, padx=(160, 0), pady=10)
+        btn_submit.grid(row=8, column=0, columnspan=2, padx=(160, 0), pady=10)
 
     def submit_Employee_info(self,name, login, pos, hire_date, branch_id):
      try:
 
-        self.sql.add_employee(self,name, login, pos, hire_date, branch_id)
+        self.sql.create_employee(name, login, pos, hire_date, branch_id)
         messagebox.showinfo("Success", "Employee created successfully!")
      except Exception as e:
         messagebox.showerror("Error", f"An error occurred while adding the Employee: \n{str(e)}")
@@ -235,13 +238,13 @@ class Admin(user.User):
         frame1.pack(pady=(100, 0), padx=80)
 
         btn_add_employee = Button(frame1, text="Add Employee", command=self.add_employee, bg="#152238", fg="white", height=5, width=30)
-        btn_add_employee.pack(anchor="n")
+        btn_add_employee.pack(side="left" ,  padx=(0,50))
 
         btn_add_bank = Button(frame1, text="Add Bank", command=self.add_bank, bg="#152238", fg="white", height=5, width=30)
-        btn_add_bank.pack(side="left")
+        btn_add_bank.pack(side="left", padx=(0, 50))
 
         btn_add_branch = Button(frame1, text="Add Branch", command=self.add_branch, bg="#152238", fg="white", height=5, width=30)
-        btn_add_branch.pack(side="left", padx=(50, 0))
+        btn_add_branch.pack(side="left")
 
         # Second Row
         frame2 = Frame(admin_window, bg="#d6e2e0")
