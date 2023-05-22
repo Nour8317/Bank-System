@@ -22,7 +22,8 @@ class User():
 
 
         # Create a treeview widget to display the loan types in a table
-        tree = ttk.Treeview(loan_types_window, columns=("loan_type", "amount", "customer", "Employee", "Branch", "state"), show="headings")
+        tree = ttk.Treeview(loan_types_window, columns=('loan_id',"loan_type", "amount", "customer", "Employee", "Branch", "state"), show="headings")
+        tree.heading("loan_id", text="Loan ID")
         tree.heading("loan_type", text="Loan Type")
         tree.heading("amount", text="Amount")
         tree.heading("customer", text="Customer")
@@ -34,7 +35,7 @@ class User():
         types = self.sql.get_loans()
         # Insert loans into the treeview
         for i, loan in enumerate(loans, start=1):
-             tree.insert("", "end", values=(loan.loan_type_name, loan.amount, loan.get_customer_name(), loan.get_employee_name(), loan.get_branch_name(), loan.state))
+             tree.insert("", "end", values=(loan.id,loan.loan_type_name, loan.amount, loan.get_customer_name(), loan.get_employee_name(), loan.get_branch_name(), loan.state))
 
 
     def view_loans_table(self,loans):
