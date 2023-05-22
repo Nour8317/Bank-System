@@ -18,17 +18,17 @@ class LoginPage:
     def __init__(self, root):
         self.root = root
         self.root.title("Login Page")
-        background_image = Image.open(os.path.join(parent_directory,'/Bank-System/python/back.jpg'))
-        background_image = background_image.resize((root.winfo_screenwidth(), root.winfo_screenheight()), Image.ANTIALIAS)
-        self.background_photo = ImageTk.PhotoImage(background_image)
-        background_label = Label(root, image=self.background_photo)
-        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        # background_image = Image.open(os.path.join(parent_directory,'/Bank-System/python/back.jpg'))
+        # background_image = background_image.resize((root.winfo_screenwidth(), root.winfo_screenheight()), Image.ANTIALIAS)
+        # self.background_photo = ImageTk.PhotoImage(background_image)
+        # background_label = Label(root, image=self.background_photo)
+        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        login_image = Image.open(os.path.join(parent_directory,'/Bank-System/python/log.png'))
-        login_image = login_image.resize((180, 160), Image.ANTIALIAS)
-        self.login_photo = ImageTk.PhotoImage(login_image)
-        login_label = Label(root, image=self.login_photo,bg="#d8e4e2")
-        login_label.grid(row=0, column=0, columnspan=2, pady=(80,0))
+        # login_image = Image.open(os.path.join(parent_directory,'/Bank-System/python/log.png'))
+        # login_image = login_image.resize((180, 160), Image.ANTIALIAS)
+        # self.login_photo = ImageTk.PhotoImage(login_image)
+        # login_label = Label(root, image=self.login_photo,bg="#d8e4e2")
+        # login_label.grid(row=0, column=0, columnspan=2, pady=(80,0))
 
         
         lbl_username = Label(root, text="Username ", font=("Helvetica", 20), fg="#152238", bg="#d6e2e0")
