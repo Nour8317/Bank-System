@@ -71,24 +71,22 @@ class Customer(user.User):
         messagebox.showinfo("Loan Started", f"Loan {loan_id} started successfully!")
     
     def start_loan(self):
-        branch_window = Toplevel()
+        loans = self.sql.get_loans(customer_id = self.id)
+        branch_window,tree = self.view_loans_gui(loans)
         branch_window.title("Start Loan")
         branch_window.configure(bg="#d6e2e0")
         branch_window.resizable(False, False)
-        branch_window.geometry("400x350")
-
-        lbl_loan_id = Label(branch_window, text="Loan ID:", bg="#d6e2e0", fg="#152238")
-        lbl_loan_id.grid(row=0, column=0, padx=10, pady=10)
-
-        entry_loan_id = Entry(branch_window)
-        entry_loan_id.grid(row=0, column=1, padx=10, pady=10)
-
-        btn_start = Button(branch_window, text="Start", command=lambda: self.process_loan(entry_loan_id.get(), branch_window), bg="#152238", fg="white", height=2, width=10)
-        btn_start.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
+        # branch_window.geometry("400x350")
+        def get_index():
+            selected = tree.focus()
+            index = int(tree.index(selected))
+            return index
+        btn_start = Button(branch_window, text="Start", command=lambda: self.process_loan(loans[get_index()].id, branch_window), bg="#152238", fg="white", height=2, width=10)
+        btn_start.grid(row=1, column=0, padx=10, pady=10)
 
     def process_loan(self, loan_id, branch_window):
         try:
-            self.sql.start_loan(loan_id)
+            self.sql.change_loan_state(loan_id,'opened')
             messagebox.showinfo("Success", "Loan started successfully!")
             branch_window.destroy()
         except Exception as e:
