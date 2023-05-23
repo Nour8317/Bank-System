@@ -187,9 +187,25 @@ class SQL():
             INSERT INTO "Branch" (City,Street,Zone,Bank_Code)
             VALUES (?,?,?,?);
         """
+        sql5 = """
+            SELECT max(BranchID) from Branch;
+        """
         vals = (branch_city, branch_street, branch_zone, bank_code)
         self.cursor.execute(sql, vals)
+        sql2 = """
+            INSERT INTO "Contain" (BranchID , LoanTypeID)
+            VALUES (?,?);
+        """
+        self.cursor.execute(sql5)
+        sql4 = self.cursor.fetchone()
+        vals2 = (sql4[0],4)
+        vals3 = (sql4[0],5)
+        vals4 = (sql4[0],6)
+        self.cursor.execute(sql2, vals2)
+        self.cursor.execute(sql2, vals3)
+        self.cursor.execute(sql2, vals4)
         return branch.Branch(bank_code, branch_city, branch_zone, branch_street, 6, bank_name)
+        
 
     def add_bank(self,bank_name, bank_city, bank_zone, bank_street):
         sql = """
