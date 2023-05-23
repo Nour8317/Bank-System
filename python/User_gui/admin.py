@@ -122,7 +122,7 @@ class Admin(user.User):
 
     def submit_branch_info(self, bank_id, branch_city, branch_zone, branch_street, bank_name):
      try:
-        if any(p == '' for p in ( bank_id, branch_city, branch_zone, branch_street, bank_name)):
+        if any(p == '' for p in (branch_city, branch_zone, branch_street)):
                 e = "Error Empty parameter is not allowed"
                 messagebox.showerror("Error" , e)
                 return
