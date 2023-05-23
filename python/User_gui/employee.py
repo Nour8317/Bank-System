@@ -72,6 +72,10 @@ class Employee(User):
         btn_submit.grid(row=6, column=0, columnspan=2, padx=(140, 0), pady=10)
     def submit_customer_info(self, name,email, ssn, street, city, zone, customer_window):
      try:
+            if any(p == '' for p in (name,email, ssn, street, city, zone, customer_window)):
+                e = "Error Empty parameter is not allowed"
+                messagebox.showerror("Error" , e)
+                return
             self.sql.create_customer(name,email,city,street,zone,ssn,self.branch_id)
             messagebox.showinfo("Success", "Customer  created successfully!")
 
@@ -191,6 +195,10 @@ class Employee(User):
 
     def create_account(self, type, balance,customer_id, customer_window):
         try:    
+            if any(p == '' for p in (type, balance,customer_id, customer_window)):
+                e = "Error Empty parameter is not allowed"
+                messagebox.showerror("Error" , e)
+                return
             self.sql.create_account(customer_id,type,balance)
             messagebox.showinfo("Success", "Customer account created successfully!")
             customer_window.destroy()
@@ -227,6 +235,10 @@ class Employee(User):
         btn_submit.grid(row=5, column=0, columnspan=2, padx=(160, 0), pady=10) 
     def update_namee(self, new_name, customer_id, customer_window):
         try:
+            if any(p == '' for p in (new_name, customer_id, customer_window)):
+                e = "Error Empty parameter is not allowed"
+                messagebox.showerror("Error" , e)
+                return
             self.sql.update_customer_name(customer_id,new_name)
             messagebox.showinfo("Success", "Customer name updated successfully!")
             customer_window.destroy()
@@ -257,6 +269,10 @@ class Employee(User):
         btn_submit.grid(row=5, column=0, columnspan=2, padx=(160, 0), pady=10)   
     def update_email_action(self, new_name, customer_id, customer_window):
         try:
+            if any(p == '' for p in (new_name, customer_id, customer_window)):
+                e = "Error Empty parameter is not allowed"
+                messagebox.showerror("Error" , e)
+                return
             self.sql.update_customer_login(customer_id,new_name)
             messagebox.showinfo("Success", "Customer name updated successfully!")
             customer_window.destroy()

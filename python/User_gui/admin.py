@@ -53,6 +53,10 @@ class Admin(user.User):
 
     def submit_bank_info(self, bank_name, bank_city, bank_zone, bank_street, bank_window):
      try:
+       if any(p == '' for p in (  bank_name, bank_city, bank_zone, bank_street, bank_window)):
+            e = "Error Empty parameter is not allowed"
+            messagebox.showerror("Error" , e)
+            return
         # Establish a connection to the database
        server = '34.123.49.27'
        database = 'BankSystem'
@@ -118,7 +122,10 @@ class Admin(user.User):
 
     def submit_branch_info(self, bank_id, branch_city, branch_zone, branch_street, bank_name):
      try:
-
+        if any(p == '' for p in ( bank_id, branch_city, branch_zone, branch_street, bank_name)):
+                e = "Error Empty parameter is not allowed"
+                messagebox.showerror("Error" , e)
+                return
         self.sql.add_branch(branch_city,branch_zone,branch_street,bank_id,bank_name)
         messagebox.showinfo("Success", "branch created successfully!")
      except Exception as e:
@@ -133,10 +140,10 @@ class Admin(user.User):
 
         lbl_Employee_Name = Label(branch_window, text="Employee Name:", bg="#d6e2e0",fg="#152238")
         lbl_Employee_Name.grid(row=1, column=0, padx=(75, 0), pady=(20, 0))
-
+        
         lbl_Employee_Name = Entry(branch_window)
         lbl_Employee_Name.grid(row=1, column=1, padx=10, pady=(20, 0))
-
+    
         lbl_Employee_HireYear= Label(branch_window, text="Employee Hire Year:", bg="#d6e2e0",fg="#152238")
         lbl_Employee_HireYear.grid(row=2, column=0, padx=(90, 0), pady=(20, 0))
 
@@ -176,19 +183,24 @@ class Admin(user.User):
         selection_combo = ttk.Combobox(branch_window, textvariable=Branch_dict, values=list(Branch_dict.keys()))
         selection_combo.grid(row=7, column=1, padx=10, pady=(20, 0))
 
-        # Create a button to submit the branch information
         btn_submit = Button(branch_window, text="Submit", command=lambda: self.submit_Employee_info(
-            lbl_Employee_Name.get(),bl_Employee_login.get(),lbl_Employee_Position.get(),date(int(lbl_Employee_HireYear.get()),int(lbl_Employee_HireMonth.get()),int(lbl_Employee_HireDay.get())),Branch_dict[selection_combo.get()]),
+            lbl_Employee_Name.get(),bl_Employee_login.get(),lbl_Employee_Position.get(),lbl_Employee_HireYear.get(),lbl_Employee_HireMonth.get(),lbl_Employee_HireDay.get(),Branch_dict[selection_combo.get()]),
                             bg="#152238", fg="white", height=1, width=16)
         btn_submit.grid(row=8, column=0, columnspan=2, padx=(160, 0), pady=10)
 
-    def submit_Employee_info(self,name, login, pos, hire_date, branch_id):
-     try:
+    def submit_Employee_info(self, name, login, pos,hire_year,hire_day,hire_month,branch_id):
+        try:
+            if any(p == '' for p in (name, login, pos, branch_id)):
+                e = "Error Empty parameter is not allowed"
+                messagebox.showerror("Error" , e)
+                return
+            hire_date = date(int(hire_year),int(hire_month),int(hire_day))
+            self.sql.create_employee(name, login, pos, hire_date, branch_id)
+            messagebox.showinfo("Success", "Employee created successfully!")
+        except ValueError as e:
+            messagebox.showerror("Error", f"An Error Occurred While Adding The Employee: \n{str(e)}")
 
-        self.sql.create_employee(name, login, pos, hire_date, branch_id)
-        messagebox.showinfo("Success", "Employee created successfully!")
-     except Exception as e:
-        messagebox.showerror("Error", f"An error occurred while adding the Employee: \n{str(e)}")
+
 
     def view_all_loan_types(self):
         

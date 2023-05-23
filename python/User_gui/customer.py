@@ -56,6 +56,10 @@ class Customer(user.User):
 
     def submit_loan_info(self, loan_type, loan_amount):
         try:
+            if any(p == '' for p in ( loan_type, loan_amount)):
+                e = "Error Empty parameter is not allowed"
+                messagebox.showerror("Error" , e)
+                return
             self.sql.create_loan(loan_type," ", loan_amount,self.id,self.branch_id)
             messagebox.showinfo("Success", "Loan created successfully!")
            
