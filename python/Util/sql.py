@@ -185,25 +185,24 @@ class SQL():
     def add_branch(self,branch_city, branch_zone, branch_street, bank_code, bank_name):
         sql = """
             INSERT INTO "Branch" (City,Street,Zone,Bank_Code)
+            OUTPUT inserted.BranchID
             VALUES (?,?,?,?);
-        """
-        sql5 = """
-            SELECT max(BranchID) from Branch;
         """
         vals = (branch_city, branch_street, branch_zone, bank_code)
         self.cursor.execute(sql, vals)
-        sql2 = """
+        branch_id = self.cursor.fetchone()[0]
+        sql_insert_contain = """
             INSERT INTO "Contain" (BranchID , LoanTypeID)
             VALUES (?,?);
         """
-        self.cursor.execute(sql5)
-        sql4 = self.cursor.fetchone()
-        vals2 = (sql4[0],4)
-        vals3 = (sql4[0],5)
-        vals4 = (sql4[0],6)
-        self.cursor.execute(sql2, vals2)
-        self.cursor.execute(sql2, vals3)
-        self.cursor.execute(sql2, vals4)
+        sql_get_loan_types = """
+            SELECT loan_TypeID FROM Loan_Type;
+        """
+        self.cursor.execute(sql_get_loan_types)
+        rows = self.cursor.fetchall()
+        for row in rows:
+            vals2 = (branch_id,row[0])
+            self.cursor.execute(sql_insert_contain, vals2)
         return branch.Branch(bank_code, branch_city, branch_zone, branch_street, 6, bank_name)
         
 

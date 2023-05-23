@@ -1,0 +1,233 @@
+CREATE TABLE BankSystem;
+USE BankSystem
+GO
+/** Object:  UserDefinedFunction [dbo].[GetComputedName]    Script Date: 5/24/2023 2:25:50 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE FUNCTION [dbo].[GetComputedName] (@BankID INT, @City VARCHAR(50), @Zone VARCHAR(50))
+RETURNS VARCHAR(100)
+AS
+BEGIN
+    DECLARE @ComputedName VARCHAR(100);
+    SELECT @ComputedName = CONCAT(Name, '-', @City, '-', @Zone)
+    FROM Bank
+    WHERE BankID = @BankID;
+    RETURN @ComputedName;
+END;
+GO
+/** Object:  Table [dbo].[Accounts]    Script Date: 5/24/2023 2:25:50 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Accounts](
+	[AccountID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountType] [varchar](50) NOT NULL,
+	[Balance] [float] NOT NULL,
+	[CustomerID] [int] NOT NULL,
+ CONSTRAINT [Accounts_pk] PRIMARY KEY CLUSTERED 
+(
+	[AccountID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Bank]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Bank](
+	[BankID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Street] [varchar](50) NOT NULL,
+	[City] [varchar](50) NOT NULL,
+	[Zone] [varchar](40) NOT NULL,
+ CONSTRAINT [Bank_pk] PRIMARY KEY CLUSTERED 
+(
+	[BankID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Branch]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Branch](
+	[BranchID] [int] IDENTITY(1,1) NOT NULL,
+	[City] [varchar](50) NOT NULL,
+	[Street] [varchar](50) NOT NULL,
+	[Zone] [varchar](40) NOT NULL,
+	[Bank_Code] [int] NOT NULL,
+	[computed_name]  AS ([dbo].[GetComputedName]([Bank_code],[City],[Zone])),
+ CONSTRAINT [Branch_pk] PRIMARY KEY CLUSTERED 
+(
+	[BranchID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Contain]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Contain](
+	[BranchID] [int] NOT NULL,
+	[LoanTypeID] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[BranchID] ASC,
+	[LoanTypeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Customer]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customer](
+	[SSN] [varchar](20) NOT NULL,
+	[Street] [varchar](50) NOT NULL,
+	[city] [varchar](50) NOT NULL,
+	[CustomerID] [int] NULL,
+	[Zone] [varchar](50) NULL,
+	[BranchID] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[SSN] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Employee]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Employee](
+	[Position] [varchar](40) NOT NULL,
+	[HireDate] [date] NOT NULL,
+	[Branch_Number] [int] NOT NULL,
+	[EmployeeID] [int] NULL
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Loan]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Loan](
+	[Loan_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Loan_Type_ID] [int] NULL,
+	[Loan_State] [varchar](50) NOT NULL,
+	[Branch_ID] [int] NULL,
+	[Customer_ID] [int] NULL,
+	[Employee_ID] [int] NULL,
+	[Amount] [float] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Loan_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Loan_Type]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Loan_Type](
+	[loan_TypeID] [int] IDENTITY(1,1) NOT NULL,
+	[Loan_Type] [varchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[loan_TypeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[User]    Script Date: 5/24/2023 2:25:51 AM **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[User](
+	[UserID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Email] [varchar](50) NOT NULL,
+	[Password] [varchar](20) NULL,
+	[UserType] [varchar](20) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UserID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [uniqu_mail] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [uniqu_mail1] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Accounts]  WITH CHECK ADD  CONSTRAINT [CustomerID_FK] FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[User] ([UserID])
+GO
+ALTER TABLE [dbo].[Accounts] CHECK CONSTRAINT [CustomerID_FK]
+GO
+ALTER TABLE [dbo].[Branch]  WITH CHECK ADD  CONSTRAINT [Bank_Code_FK] FOREIGN KEY([Bank_Code])
+REFERENCES [dbo].[Bank] ([BankID])
+GO
+ALTER TABLE [dbo].[Branch] CHECK CONSTRAINT [Bank_Code_FK]
+GO
+ALTER TABLE [dbo].[Contain]  WITH CHECK ADD  CONSTRAINT [BranchID_FK] FOREIGN KEY([BranchID])
+REFERENCES [dbo].[Branch] ([BranchID])
+GO
+ALTER TABLE [dbo].[Contain] CHECK CONSTRAINT [BranchID_FK]
+GO
+ALTER TABLE [dbo].[Contain]  WITH CHECK ADD  CONSTRAINT [LoanTypeID_FK] FOREIGN KEY([LoanTypeID])
+REFERENCES [dbo].[Loan_Type] ([loan_TypeID])
+GO
+ALTER TABLE [dbo].[Contain] CHECK CONSTRAINT [LoanTypeID_FK]
+GO
+ALTER TABLE [dbo].[Customer]  WITH CHECK ADD  CONSTRAINT [Customer_fk_User] FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[User] ([UserID])
+GO
+ALTER TABLE [dbo].[Customer] CHECK CONSTRAINT [Customer_fk_User]
+GO
+ALTER TABLE [dbo].[Customer]  WITH CHECK ADD  CONSTRAINT [FK_BranchID] FOREIGN KEY([BranchID])
+REFERENCES [dbo].[Branch] ([BranchID])
+GO
+ALTER TABLE [dbo].[Customer] CHECK CONSTRAINT [FK_BranchID]
+GO
+ALTER TABLE [dbo].[Employee]  WITH CHECK ADD  CONSTRAINT [Employee_fk_User] FOREIGN KEY([EmployeeID])
+REFERENCES [dbo].[User] ([UserID])
+GO
+ALTER TABLE [dbo].[Employee] CHECK CONSTRAINT [Employee_fk_User]
+GO
+ALTER TABLE [dbo].[Loan]  WITH CHECK ADD  CONSTRAINT [Branch_ID_FK] FOREIGN KEY([Branch_ID])
+REFERENCES [dbo].[Branch] ([BranchID])
+GO
+ALTER TABLE [dbo].[Loan] CHECK CONSTRAINT [Branch_ID_FK]
+GO
+ALTER TABLE [dbo].[Loan]  WITH CHECK ADD  CONSTRAINT [Customer_ID_FK] FOREIGN KEY([Customer_ID])
+REFERENCES [dbo].[User] ([UserID])
+GO
+ALTER TABLE [dbo].[Loan] CHECK CONSTRAINT [Customer_ID_FK]
+GO
+ALTER TABLE [dbo].[Loan]  WITH CHECK ADD  CONSTRAINT [Employee_ID_FK] FOREIGN KEY([Employee_ID])
+REFERENCES [dbo].[User] ([UserID])
+GO
+ALTER TABLE [dbo].[Loan] CHECK CONSTRAINT [Employee_ID_FK]
+GO
+ALTER TABLE [dbo].[Loan]  WITH CHECK ADD  CONSTRAINT [Loan_Type_ID_FK] FOREIGN KEY([Loan_Type_ID])
+REFERENCES [dbo].[Loan_Type] ([loan_TypeID])
+GO
+ALTER TABLE [dbo].[Loan] CHECK CONSTRAINT [Loan_Type_ID_FK]
+GO
+INSERT INTO "User" (Name, Email,Password, UserType)
+VALUES ('dina abbas','dinaabbas@gmail.com','D123456#','admin');
+INSERT INTO "Loan_Type" (Loan_Type) VALUES ('Commercial');
+INSERT INTO "Loan_Type" (Loan_Type) VALUES ('Industry');
+INSERT INTO "Loan_Type" (Loan_Type) VALUES ('Personal');
