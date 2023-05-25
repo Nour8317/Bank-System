@@ -324,10 +324,19 @@ class SQL():
             UPDATE Loan SET Loan_State = ? WHERE Loan_ID = ?;
         """
         values = (state, loan_id)
+        if state == 'rejected':
+            sql = """
+                DELETE FROM Loan WHERE Loan_ID = ?;
+            """
+            values = (loan_id,)
         self.cursor.execute(sql, values)
 
-
-
+    def delete_account(self,account_id):
+        sql = """
+                DELETE FROM Accounts WHERE AccountID = ?;
+            """
+        values = (account_id,)
+        self.cursor.execute(sql, values)
     def set_employee_id(self,loan_id, employee_id):
 
         sql = """

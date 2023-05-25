@@ -98,20 +98,38 @@ class Customer(user.User):
             messagebox.showerror("Error", "An error occurred while starting the loan.")
 
 
-
-    def show_accounts(self):
+    def show_accounts_table(self):
         accounts_window = Toplevel()
         accounts_window.title("Accounts")
         accounts_window.configure(bg="#d6e2e0")
         accounts_window.resizable(False, False)
-        tree = ttk.Treeview(accounts_window, columns=("type", "balance"), show="headings")
+        tree = ttk.Treeview(accounts_window, columns=("type", "balance"), show="headings",selectmode='browse')
         tree.heading("type", text="Type")
         tree.heading("balance", text="Balance")
         tree.grid(row=0, column=0, padx=10, pady=10)
         accounts = self.sql.get_accounts(self.id)
         for account in accounts:
             tree.insert("", "end", values=(account.type, account.balance))
-
+        return accounts_window,tree
+    def show_accounts(self):
+        self.show_accounts_table()
+    def delete_accounts_page(self):
+        accounts = self.sql.get_accounts(self.id)
+        window,tree = self.show_accounts_table()
+        def get_index():
+            selected = tree.focus()
+            index = int(tree.index(selected))
+            return index
+        btn_start = Button(window, text="delete", command=lambda: self.delete_account(accounts[get_index()].id, window), bg="#152238", fg="white", height=2, width=10)
+        btn_start.grid(row=1, column=0, padx=10, pady=10)
+    def delete_account(self, account_id, window):
+        try:
+            self.sql.delete_account(account_id)
+            messagebox.showinfo("Success", "Account Deleted successfully!")
+            window.destroy()
+        except Exception as e:
+            print("An error occurred while starting the loan:", e)
+            messagebox.showerror("Error", "An error occurred while Deleting Account.")
     def page(self):
         window = Tk()
         window.title("Customer Page")
@@ -139,6 +157,9 @@ class Customer(user.User):
 
         btn_show_accounts = Button(frame2, text="Show accounts", command=self.show_accounts, bg="#152238", fg="white", height=6, width=40)
         btn_show_accounts.grid(row=0, column=1, padx=(20, 30), pady=10)
+
+        btn_delete_accounts = Button(frame2, text="Delete accounts", command=self.delete_accounts_page, bg="#152238", fg="white", height=6, width=40)
+        btn_delete_accounts.grid(row=1, column=0, padx=(30, 20), pady=10)
 
 
 
